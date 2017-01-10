@@ -4,7 +4,16 @@ const pkg = require('./package.json')
 
 export default {
   entry: 'index.js',
-  plugins: [ babel() ],
+  plugins: [
+    babel({
+      babelrc: false,
+      presets: [
+        ["es2015", { "modules": false }],
+        "stage-2"
+      ],
+      plugins: ["external-helpers"]
+    })
+  ],
   targets: [
     {
       dest: pkg['main'],
