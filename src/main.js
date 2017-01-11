@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import App from './App'
-import VueValid from '../dist/vue-valid'
+import VueForm from '../dist/vue-valid'
 
-Vue.use(VueValid)
+Vue.use(VueForm)
 
 /* eslint-disable no-new */
 new Vue({ el: '#app', render: h => h(App) })

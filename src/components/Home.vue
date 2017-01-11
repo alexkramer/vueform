@@ -21,11 +21,12 @@
 </template>
 
 <script>
+  import VueForm from '../../dist/vue-valid'
+
   export default {
     data () {
       return {
-        // contactForm: new VueForm()
-        contactForm: {}
+        contactForm: new VueForm()
       }
     },
     methods: {
