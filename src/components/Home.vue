@@ -122,22 +122,36 @@
           <textarea id="description"
                     class="textArea widthTwelve resizeVertical"
                     rows="13"
-                    v-model="contactData.description">
+                    @input="hasOneWordValidator"
+                    v-model="contactData.description"
+                    required>
           </textarea>
+
+          <div v-if="contactForm.$wasSubmitted"
+               class="marginTop15 widthTwelve colorRed fontSize14">
+            <div v-if="contactForm.description.valueMissing">
+              Description is required.
+            </div>
+            <div v-if="contactForm.description.patternMismatch">
+              Please use only numbers, spaces, dashes, and parenthesis.
+            </div>
+          </div>
 
         </div>
 
         <!-- Submit button -->
         <button type="submit"
                 class="button circular floatRight width140 height50 fontSize20
-                       lineHeight32">
-          Send
+                       lineHeight32"
+                :disabled="contactForm.$isInvalid">
+          Send {{ contactForm.$isInvalid }}
           <div class="width30 fillWhite floatRight marginRight10 marginTop2"
                v-html="plane">
           </div>
         </button>
 
         <!-- Submit button -->
+
         <button type="reset"
                 class="button circular floatRight width140 height50 fontSize20
                        lineHeight32 marginRight30 bgGray">
@@ -169,7 +183,10 @@
       }
     },
     methods: {
-      send () {}
+      send () {},
+      hasOneWordValidator (test) {
+        console.log(test)
+      }
     }
   }
 </script>

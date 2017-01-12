@@ -53,6 +53,8 @@ export default class VueForm {
             if (id.indexOf('$') === -1) {
               value[id].$wasFocused = false
               value[id].$el.classList.remove(value.$wasFocusedClass)
+              Object.assign(value[id], extractValidity(value[id].validity))
+              value.$updateFormValidity(id)
             }
           }
         })
@@ -62,7 +64,9 @@ export default class VueForm {
           if ($el.form === el && $el.willValidate && $el.hasAttribute('id')) {
             //
             const field = Object.assign({ $el }, extractValidity($el.validity))
-            Vue.set(value, $el.getAttribute('id'), field)
+            const id = $el.getAttribute('id')
+            Vue.set(value, id, field)
+            value.$updateFormValidity(id)
 
             // Add wasFocused class to element when focus event is triggered.
             $el.addEventListener('focus', ({ target }) => {
@@ -72,22 +76,9 @@ export default class VueForm {
             })
 
             $el.addEventListener('input', ({ target }) => {
-              // Update field validity state.
               const id = target.getAttribute('id')
               Object.assign(value[id], extractValidity(target.validity))
-
-              // Update form validity state.
-              const index = form.$invalidFields.indexOf(id)
-              if (value[id].valid && index !== -1) {
-                form.$invalidFields.splice(index, 1)
-                if (form.$invalidFields.length === 0) {
-                  form.$isValid = true
-                  form.$isInvalid = false
-                }
-              } else if (!value[id].valid) {
-                form.$invalidFields.push(id)
-                form.$isInvalid = true
-              }
+              value.$updateFormValidity(id)
             })
           }
         }
@@ -95,12 +86,37 @@ export default class VueForm {
     })
   }
 
-  $setValidity (field, result) {
-    if (result && typeof result === 'string') {
-      this[field].customError = result
-      this[field].valid = false
-    } else if (result && !result.valid) {
-      Object.assign(this[field], result)
+  $updateCustomValidity (field, result) {
+    if (result) {
+      if (result && typeof result === 'string') {
+        this[field].$el.setCustomValidity(result)
+      } else {
+        if (result.valid) {
+          this[field].$el.setCustomValidity('')
+        } else {
+          this[field].$el.setCustomValidity('Multiple errors')
+        }
+        Object.assign(this[field], result)
+      }
+    } else {
+      this[field].$el.setCustomValidity('')
+    }
+    Object.assign(this[field], extractValidity(this[field].$el.validity))
+    this.$updateFormValidity(field)
+  }
+
+  $updateFormValidity (field) {
+    const index = this.$invalidFields.indexOf(field)
+    if (this[field].valid && index !== -1) {
+      this.$invalidFields.splice(index, 1)
+      if (this.$invalidFields.length === 0) {
+        this.$isValid = true
+        this.$isInvalid = false
+      }
+    } else if (!this[field].valid) {
+      this.$isValid = false
+      this.$isInvalid = true
+      this.$invalidFields.push(field)
     }
   }
 }
