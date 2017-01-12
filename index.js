@@ -1,3 +1,18 @@
+function extractValidity(vs) {
+  return {
+    badInput: vs.badInput,
+    customError: vs.customError,
+    patternMismatch: vs.patternMismatch,
+    rangeOverflow: vs.rangeOverflow,
+    rangeUnderflow: vs.rangeUnderflow,
+    stepMismatch: vs.stepMismatch,
+    tooLong: vs.tooLong,
+    typeMismatch: vs.typeMismatch,
+    valid: vs.valid,
+    valueMissing: vs.valueMissing,
+  }
+}
+
 export default class VueForm {
   constructor (options = { wasFocusedClass: 'wasFocused', noValidate: true }) {
     this.$noValidate = options.noValidate
@@ -38,20 +53,20 @@ export default class VueForm {
         for (const $el of el.querySelectorAll('input, textarea, select')) {
           //
           if ($el.form === el && $el.willValidate && $el.hasAttribute('id')) {
-
             //
-            form[$el.getAttribute('id')] = { $el, $validity: $el.validity }
+            const field = Object.assign({ $el }, extractValidity($el.validity))
+            Vue.set(form, $el.getAttribute('id'), field)
 
             // Add wasFocused class to element when focus event is triggered.
             $el.addEventListener('focus', ({ target }) => {
-              const formControl = form[target.getAttribute('id')]
-              formControl.$wasFocused = true
+              const id = $el.getAttribute('id')
+              form[id].$wasFocused = true
               target.classList.add(form.$wasFocusedClass)
             })
 
             $el.addEventListener('input', ({ target }) => {
-              const formControl = form[target.getAttribute('id')]
-              formControl.$validity = target.validity
+              const formField = form[target.getAttribute('id')]
+              Object.assign(formField, extractValidity(target.validity))
 
               // TODO run custom validator
             })
@@ -63,9 +78,9 @@ export default class VueForm {
 
   $validity (id) {
     if (id) {
-      const formControl = this[id]
-      if (formControl) {
-        return formControl.$validity
+      const formField = this[id]
+      if (formField) {
+        return formField.$validity
       }
       return {}
     }
@@ -74,9 +89,9 @@ export default class VueForm {
 
   $valid (id) {
     if (id) {
-      const formControl = this[id]
-      if (formControl) {
-        return formControl.$validity.valid
+      const formField = this[id]
+      if (formField) {
+        return formField.$validity.valid
       }
       return false
     }
@@ -85,9 +100,9 @@ export default class VueForm {
 
   $invalid (id) {
     if (id) {
-      const formControl = this[id]
-      if (formControl) {
-        return !formControl.$validity.valid
+      const formField = this[id]
+      if (formField) {
+        return !formField.$validity.valid
       }
       return true
     }

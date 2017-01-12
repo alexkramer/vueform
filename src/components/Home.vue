@@ -20,12 +20,18 @@
           <input id="name"
                  type="text"
                  class="inputText widthTwelve"
-                 v-model="contactForm.name"
+                 v-model="contactData.name"
                  pattern="[A-Za-z\s'\-]+"
                  required>
 
-          <div v-if="contactForm.$submitted && contactForm.$invalid('name')">
-            Name is required.
+          <div v-if="contactForm.$wasSubmitted"
+               class="marginTop15 widthTwelve colorRed fontSize14">
+            <div v-if="contactForm.name.valueMissing">
+              Name is required.s
+            </div>
+            <div v-if="contactForm.name.patternMismatch">
+              Please only use letters, "-", "'", and spaces.
+            </div>
           </div>
         </div>
 
@@ -41,7 +47,7 @@
           <input id="email"
                  type="text"
                  class="inputText widthTwelve"
-                 v-model="contactForm.email">
+                 v-model="contactData.email">
 
         </div>
 
@@ -57,7 +63,7 @@
           <input id="phone"
                  type="text"
                  class="inputText widthTwelve"
-                 v-model="contactForm.phone">
+                 v-model="contactData.phone">
 
         </div>
 
@@ -73,7 +79,7 @@
           <input id="project"
                  type="text"
                  class="inputText widthTwelve"
-                 v-model="contactForm.project">
+                 v-model="contactData.project">
 
         </div>
 
@@ -89,7 +95,7 @@
           <input id="budget"
                  type="text"
                  class="inputText widthTwelve"
-                 v-model="contactForm.budget">
+                 v-model="contactData.budget">
 
         </div>
 
@@ -109,7 +115,7 @@
           <textarea id="description"
                     class="textArea widthTwelve resizeVertical"
                     rows="18"
-                    v-model="contactForm.description">
+                    v-model="contactData.description">
           </textarea>
 
         </div>
@@ -124,6 +130,16 @@
           </div>
         </button>
 
+        <!-- Submit button -->
+        <button type="reset"
+                class="button circular floatRight width140 height50 fontSize20
+                       lineHeight32 marginRight30 bgGray">
+          Reset
+          <div class="width22 fillWhite floatRight marginRight10 marginTop2"
+               v-html="reset">
+          </div>
+        </button>
+
       </div>
 
     </form>
@@ -133,12 +149,15 @@
 
 <script>
   import plane from '../assets/plane.svg'
+  import reset from '../assets/reset.svg'
   import VueForm from '../../dist/vue-valid'
 
   export default {
     data () {
       return {
         plane,
+        reset,
+        contactData: {},
         contactForm: new VueForm()
       }
     },
