@@ -4,7 +4,7 @@
     <form @submit.prevent="send"
           v-form="contactForm"
           class="borderRadius25 marginRightAuto marginLeftAuto marginTop40
-                 displayFlex bgIan">
+                 displayFlex bgWhisper">
 
       <div class="flex1 padding30">
 

@@ -65,10 +65,27 @@
     background: #482292;
   }
 
+  .bgWhisper {
+    background-color: #f4f5f9;
+  }
+
   .borderRadius25 {
     border-radius: 25px;
   }
-  .bgIan {
-    background-color: #f4f5f9;
+  .button {
+    box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.15);
+
+    &:focus {
+      outline: 0;
+    }
+
+    &:hover {
+      box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.30);
+    }
+
+    &:active {
+      transform: scale3d(0.96, 0.96, 1);
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
+    }
   }
 </style>
