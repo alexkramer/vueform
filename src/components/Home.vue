@@ -175,6 +175,7 @@
 </script>
 
 <style lang="scss">
+  .wasSubmitted :invalid:not(:focus),
   .wasFocused:invalid:not(:focus) {
     color: #ff4136;
     border-color: #ff4136;

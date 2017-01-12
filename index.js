@@ -14,9 +14,14 @@ function extractValidity(vs) {
 }
 
 export default class VueForm {
-  constructor (options = { wasFocusedClass: 'wasFocused', noValidate: true }) {
+  constructor (options = {
+    wasFocusedClass: 'wasFocused',
+    wasSubmittedClass: 'wasSubmitted',
+    noValidate: true
+  }) {
     this.$noValidate = options.noValidate
     this.$wasFocusedClass = options.wasFocusedClass
+    this.$wasSubmittedClass = options.wasSubmittedClass
     this.$wasSubmitted = false
     this.$isInvalid = false
     this.$isValid = true
@@ -34,11 +39,13 @@ export default class VueForm {
         form.$el.addEventListener('submit', () => {
           console.log('submit')
           form.$wasSubmitted = true
+          form.$el.classList.add(form.$wasSubmittedClass)
         })
 
         form.$el.addEventListener('reset', () => {
           // Reset $wasSubmitted property.
           form.$wasSubmitted = false
+          form.$el.classList.remove(form.$wasSubmittedClass)
 
           // Reset $wasFocused property and remove the corresponding class
           // from each child node.
