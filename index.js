@@ -1,5 +1,6 @@
 export default class VueForm {
-  constructor (options = { wasFocusedClass: 'wasFocused' }) {
+  constructor (options = { wasFocusedClass: 'wasFocused', noValidate: true }) {
+    this.$noValidate = options.noValidate
     this.$wasFocusedClass = options.wasFocusedClass
     this.$hasSubmitted = false
     this.$isInvalid = false
@@ -12,9 +13,48 @@ export default class VueForm {
       bind (el, binding) {
         const form = binding.value
         form.$el = el
+        form.$el.noValidate = form.$noValidate
+
+        //
+        form.$el.addEventListener('submit', () => {
+          console.log('submit')
+          form.$wasSubmitted = true
+        })
+
+        form.$el.addEventListener('reset', () => {
+          // Reset $wasSubmitted property.
+          form.$wasSubmitted = false
+
+          // Reset $wasFocused property and remove the corresponding class
+          // from each child node.
+          for (const id of Object.keys(form)) {
+            if (id.indexOf('$') === -1) {
+              form[id].$wasFocused = false
+              form[id].$el.classList.remove(form.$wasFocusedClass)
+            }
+          }
+        })
+
         for (const $el of el.childNodes) {
-          if ($el.willValidate && $el.form === el && $el.hasAttribute('id')) {
+          //
+          const validTag = ['INPUT', 'TEXTAREA', 'SELECT'].includes($el.tagName)
+          if (validTag && $el.willValidate && $el.hasAttribute('id')) {
+            //
             form[$el.getAttribute('id')] = { $el, $validity: $el.validity }
+
+            // Add wasFocused class to element when focus event is triggered.
+            $el.addEventListener('focus', ({ target }) => {
+              const formControl = form[target.getAttribute('id')]
+              formControl.$wasFocused = true
+              target.classList.add(form.$wasFocusedClass)
+            })
+
+            $el.addEventListener('input', ({ target }) => {
+              const formControl = form[target.getAttribute('id')]
+              formControl.$validity = target.validity
+
+              // TODO run custom validator
+            })
           }
         }
       }
@@ -23,8 +63,9 @@ export default class VueForm {
 
   $validity (id) {
     if (id) {
-      if (this[id]) {
-        this[id].$validity
+      const formControl = this[id]
+      if (formControl) {
+        return formControl.$validity
       }
       return {}
     }
@@ -33,8 +74,9 @@ export default class VueForm {
 
   $valid (id) {
     if (id) {
-      if (this[id]) {
-        return this[id].$validity.valid
+      const formControl = this[id]
+      if (formControl) {
+        return formControl.$validity.valid
       }
       return false
     }
@@ -43,8 +85,9 @@ export default class VueForm {
 
   $invalid (id) {
     if (id) {
-      if (this[id]) {
-        return !this[id].$validity.valid
+      const formControl = this[id]
+      if (formControl) {
+        return !formControl.$validity.valid
       }
       return true
     }
