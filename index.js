@@ -69,6 +69,8 @@ export default class VueForm {
               Object.assign(formField, extractValidity(target.validity))
 
               // TODO run custom validator
+
+              // TODO update form state
             })
           }
         }
