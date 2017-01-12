@@ -27,12 +27,13 @@
           <div v-if="contactForm.$wasSubmitted"
                class="marginTop15 widthTwelve colorRed fontSize14">
             <div v-if="contactForm.name.valueMissing">
-              Name is required.s
+              Name is required.
             </div>
             <div v-if="contactForm.name.patternMismatch">
-              Please only use letters, "-", "'", and spaces.
+              Please use only letters, spaces, dashes, and apostrophes.
             </div>
           </div>
+
         </div>
 
         <!-- Email field -->
@@ -45,9 +46,20 @@
           </div>
 
           <input id="email"
-                 type="text"
+                 type="email"
                  class="inputText widthTwelve"
-                 v-model="contactData.email">
+                 v-model="contactData.email"
+                 required>
+
+          <div v-if="contactForm.$wasSubmitted"
+               class="marginTop15 widthTwelve colorRed fontSize14">
+            <div v-if="contactForm.email.valueMissing">
+              Email is required.
+            </div>
+            <div v-if="contactForm.email.typeMismatch">
+              Please enter a valid email address.
+            </div>
+          </div>
 
         </div>
 
@@ -63,12 +75,23 @@
           <input id="phone"
                  type="text"
                  class="inputText widthTwelve"
-                 v-model="contactData.phone">
+                 v-model="contactData.phone"
+                 required>
+
+          <div v-if="contactForm.$wasSubmitted"
+               class="marginTop15 widthTwelve colorRed fontSize14">
+            <div v-if="contactForm.phone.valueMissing">
+              Phone is required.
+            </div>
+            <div v-if="contactForm.phone.patternMismatch">
+              Please use only numbers, spaces, dashes, and parenthesis.
+            </div>
+          </div>
 
         </div>
 
         <!-- Project field -->
-        <div class="marginBottom30 widthTwelve">
+        <div class="widthTwelve">
 
           <div class="marginBottom10">
             <label for="project" class="colorMidGray fontSize14">
@@ -80,22 +103,6 @@
                  type="text"
                  class="inputText widthTwelve"
                  v-model="contactData.project">
-
-        </div>
-
-        <!-- Budget field -->
-        <div class="widthTwelve">
-
-          <div class="marginBottom10">
-            <label for="budget" class="colorMidGray fontSize14">
-              Your budget
-            </label>
-          </div>
-
-          <input id="budget"
-                 type="text"
-                 class="inputText widthTwelve"
-                 v-model="contactData.budget">
 
         </div>
 
@@ -114,7 +121,7 @@
 
           <textarea id="description"
                     class="textArea widthTwelve resizeVertical"
-                    rows="18"
+                    rows="13"
                     v-model="contactData.description">
           </textarea>
 
