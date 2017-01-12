@@ -32,28 +32,30 @@
 
   body {
     overflow: auto;
-    color: #f4f5f9;
+    // color: #B3FFAB;
+    // color: #12FFF7;
+    color: rgba(105, 255, 187, .8);
     font-family: 'Montserrat', sans-serif;
     background: #00CDAC; /* fallback for old browsers */
-    background: -webkit-linear-gradient(0, #00CDAC , #02AAB0); /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(0deg, #00CDAC , #02AAB0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: -webkit-linear-gradient(0, #267871 , #136a8a); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(0deg, #267871 , #136a8a); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     background-repeat: no-repeat;
     background-attachment: fixed;
   }
 
   a.link,
   a:visited.link {
-    color: rgba(198, 148, 232, 1);
-    fill: rgba(198, 148, 232, 1);
+    color: rgba(105, 255, 187, .8);
+    fill: rgba(105, 255, 187, .8);
     transition: color 0.5s ease-in-out,
                 fill 0.5s ease-in-out;
   }
   a:hover.link {
-    color: rgba(238, 238, 238, 1);
-    fill: rgba(238, 238, 238, 1);
+    color: rgba(244, 245, 249, 1);
+    fill: rgba(244, 245, 249, 1);
   }
   a.link.border {
-    border-bottom: 2px solid rgba(198, 148, 232, 0.5);
+    border-bottom: 2px solid rgba(105, 255, 187, .5);
   }
 
   footer::selection,

@@ -25,7 +25,7 @@
                  required>
 
           <div v-if="contactForm.$wasSubmitted"
-               class="marginTop15 widthTwelve colorRed fontSize14">
+               class="marginTop12 widthTwelve colorRed fontSize14">
             <div v-if="contactForm.name.valueMissing">
               Name is required.
             </div>
@@ -52,7 +52,7 @@
                  required>
 
           <div v-if="contactForm.$wasSubmitted"
-               class="marginTop15 widthTwelve colorRed fontSize14">
+               class="marginTop12 widthTwelve colorRed fontSize14">
             <div v-if="contactForm.email.valueMissing">
               Email is required.
             </div>
@@ -80,7 +80,7 @@
                  required>
 
           <div v-if="contactForm.$wasSubmitted"
-               class="marginTop15 widthTwelve colorRed fontSize14">
+               class="marginTop12 widthTwelve colorRed fontSize14">
             <div v-if="contactForm.phone.valueMissing">
               Phone is required.
             </div>
@@ -129,7 +129,7 @@
           </textarea>
 
           <div v-if="contactForm.$wasSubmitted"
-               class="marginTop15 widthTwelve colorRed fontSize14">
+               class="marginTop12 widthTwelve colorRed fontSize14">
             <div v-if="contactForm.description.valueMissing">
               Description is required.
             </div>
@@ -209,5 +209,9 @@
 
   form {
     box-shadow: 0 18px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  textarea {
+    max-width: 548px;
   }
 </style>
