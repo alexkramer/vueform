@@ -37,7 +37,6 @@ export default class VueForm {
 
         //
         value.$el.addEventListener('submit', () => {
-          console.log('submit')
           value.$wasSubmitted = true
           value.$el.classList.add(value.$wasSubmittedClass)
         })
@@ -53,7 +52,7 @@ export default class VueForm {
             if (id.indexOf('$') === -1) {
               value[id].$wasFocused = false
               value[id].$el.classList.remove(value.$wasFocusedClass)
-              Object.assign(value[id], extractValidity(value[id].validity))
+              Object.assign(value[id], extractValidity(value[id].$el.validity))
               value.$updateFormValidity(id)
             }
           }
@@ -113,7 +112,7 @@ export default class VueForm {
         this.$isValid = true
         this.$isInvalid = false
       }
-    } else if (!this[field].valid) {
+    } else if (!this[field].valid && index === -1) {
       this.$isValid = false
       this.$isInvalid = true
       this.$invalidFields.push(field)

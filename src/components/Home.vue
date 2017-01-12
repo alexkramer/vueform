@@ -76,6 +76,7 @@
                  type="text"
                  class="inputText widthTwelve"
                  v-model="contactData.phone"
+                 pattern="^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$"
                  required>
 
           <div v-if="contactForm.$wasSubmitted"
@@ -143,11 +144,11 @@
         <button type="submit"
                 class="button circular floatRight width140 height50 fontSize20
                        lineHeight32"
-                :disabled="contactForm.$isInvalid">
-          Send {{ contactForm.$isInvalid }}
+                :class="{ 'disabled': contactForm.$isInvalid }">
           <div class="width30 fillWhite floatRight marginRight10 marginTop2"
                v-html="plane">
           </div>
+          Send
         </button>
 
         <!-- Submit button -->
@@ -155,10 +156,10 @@
         <button type="reset"
                 class="button circular floatRight width140 height50 fontSize20
                        lineHeight32 marginRight30 bgGray">
-          Reset
           <div class="width22 fillWhite floatRight marginRight10 marginTop2"
                v-html="reset">
           </div>
+          Reset
         </button>
 
       </div>
@@ -183,7 +184,13 @@
       }
     },
     methods: {
-      send () {},
+      send () {
+        if (this.contactForm.$isValid) {
+          console.log('VALID')
+        } else {
+          console.log('INVALID')
+        }
+      },
       hasOneWordValidator (test) {
         console.log(test)
       }
@@ -198,5 +205,9 @@
     border-color: #ff4136;
     background-color: #FEE9E7;
     transition: all 0.2s;
+  }
+
+  form {
+    box-shadow: 0 18px 24px rgba(0, 0, 0, 0.1);
   }
 </style>

@@ -72,12 +72,16 @@
   .borderRadius25 {
     border-radius: 25px;
   }
-  .button {
-    box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.15);
 
-    &:focus {
-      outline: 0;
-    }
+  .button:focus {
+    outline: 0;
+  }
+  .button.disabled,
+  .button.disabled:hover {
+    background-color: #999;
+  }
+  .button:not(.disabled) {
+    box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.15);
 
     &:hover {
       box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.30);
