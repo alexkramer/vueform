@@ -2,7 +2,7 @@ export default class VueForm {
   constructor (options = { wasFocusedClass: 'wasFocused', noValidate: true }) {
     this.$noValidate = options.noValidate
     this.$wasFocusedClass = options.wasFocusedClass
-    this.$hasSubmitted = false
+    this.$wasSubmitted = false
     this.$isInvalid = false
     this.$isValid = true
   }
@@ -35,10 +35,10 @@ export default class VueForm {
           }
         })
 
-        for (const $el of el.childNodes) {
+        for (const $el of el.querySelectorAll('input, textarea, select')) {
           //
-          const validTag = ['INPUT', 'TEXTAREA', 'SELECT'].includes($el.tagName)
-          if (validTag && $el.willValidate && $el.hasAttribute('id')) {
+          if ($el.form === el && $el.willValidate && $el.hasAttribute('id')) {
+
             //
             form[$el.getAttribute('id')] = { $el, $validity: $el.validity }
 

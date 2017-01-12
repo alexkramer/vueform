@@ -32,7 +32,7 @@
 
   body {
     overflow: auto;
-    color: #fff;
+    color: #f4f5f9;
     font-family: 'Montserrat', sans-serif;
     background: #00CDAC; /* fallback for old browsers */
     background: -webkit-linear-gradient(0, #00CDAC , #02AAB0); /* Chrome 10-25, Safari 5.1-6 */
@@ -63,5 +63,12 @@
   code::selection {
     color: #ddd;
     background: #482292;
+  }
+
+  .borderRadius25 {
+    border-radius: 25px;
+  }
+  .bgIan {
+    background-color: #f4f5f9;
   }
 </style>

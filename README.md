@@ -42,7 +42,7 @@ Form API
 
 Properties:
 
-`$hasSubmitted`
+`$wasSubmitted`
 `$isInvalid`
 `$isValid`
 
