@@ -37,6 +37,8 @@ Add a form element to the form with the `v-validate` directive:
 Form $options:
 
 wasFocusedClass: `wasFocused`
+wasSubmittedClass: `wasSubmitted`
+noValidate: true
 
 Form API
 
@@ -45,9 +47,8 @@ Properties:
 `$wasSubmitted`
 `$isInvalid`
 `$isValid`
+`$invalidFields`
 
 Methods:
 
-`$invalid`
-`$valid`
-`$validity`
+`$setValidity`
