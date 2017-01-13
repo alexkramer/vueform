@@ -32,11 +32,9 @@
 
   body {
     overflow: auto;
-    // color: #B3FFAB;
-    // color: #12FFF7;
     color: rgba(100, 255, 200, .8);
     font-family: 'Montserrat', sans-serif;
-    background: #00CDAC; /* fallback for old browsers */
+    background: #136a8a; /* fallback for old browsers */
     background: -webkit-linear-gradient(0, #267871 , #136a8a); /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(0deg, #267871 , #136a8a); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     background-repeat: no-repeat;
