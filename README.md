@@ -1,4 +1,4 @@
-# vueform
+# (vueform)[https://vueform.optick.io]
 
 > Form validation for Vue.js powered by HTML5
 
@@ -102,7 +102,6 @@ VueForm properties:
 
 VueForm methods:
 
-| Method                  | Parameters |
-|-------------------------|------------|
-| `$updateCustomValidity`   `field`    |
-|                           `result`   |
+| Method                  | Parameters | Description                           |
+|-------------------------|------------|---------------------------------------|
+| `$updateCustomValidity` | `field`: string, `result`: string or object | Used to manually update the validity state for a field, most likely from a custom validator outside of VueForm |
