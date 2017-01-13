@@ -1,20 +1,21 @@
 {
   "name": "vueform",
   "version": "1.0.0",
-  "description": "Form validation for Vue.js that works alongside HTML5",
+  "description": "Form validation for Vue.js powered by HTML5",
   "keywords": [
     "vue",
     "vue.js",
     "vuejs",
     "form",
     "validation",
-    "validator"
+    "validator",
+    "html5",
+    "validitystate"
   ],
   "main": "dist/vueform.js",
   "module": "dist/vueform.mjs",
   "jsnext:main": "dist/vueform.mjs",
   "author": "Ian Walter <public@iankwalter.com>",
-  "private": true,
   "scripts": {
     "compile": "rollup -c && npm run uglify",
     "watch": "rollup -wc",
