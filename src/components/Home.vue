@@ -151,8 +151,7 @@
           Send
         </button>
 
-        <!-- Submit button -->
-
+        <!-- Reset button -->
         <button type="reset"
                 class="button circular floatRight width140 height50 fontSize20
                        lineHeight32 marginRight30 bgGray">
