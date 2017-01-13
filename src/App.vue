@@ -34,7 +34,7 @@
     overflow: auto;
     // color: #B3FFAB;
     // color: #12FFF7;
-    color: rgba(105, 255, 187, .8);
+    color: rgba(100, 255, 200, .8);
     font-family: 'Montserrat', sans-serif;
     background: #00CDAC; /* fallback for old browsers */
     background: -webkit-linear-gradient(0, #267871 , #136a8a); /* Chrome 10-25, Safari 5.1-6 */
@@ -45,8 +45,8 @@
 
   a.link,
   a:visited.link {
-    color: rgba(105, 255, 187, .8);
-    fill: rgba(105, 255, 187, .8);
+    color: rgba(100, 255, 200, .8);
+    fill: rgba(100, 255, 200, .8);
     transition: color 0.5s ease-in-out,
                 fill 0.5s ease-in-out;
   }
@@ -55,7 +55,7 @@
     fill: rgba(244, 245, 249, 1);
   }
   a.link.border {
-    border-bottom: 2px solid rgba(105, 255, 187, .5);
+    border-bottom: 2px solid rgba(100, 255, 200, .4);
   }
 
   footer::selection,

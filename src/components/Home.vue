@@ -133,8 +133,8 @@
             <div v-if="contactForm.description.valueMissing">
               Description is required.
             </div>
-            <div v-if="contactForm.description.patternMismatch">
-              Please use only numbers, spaces, dashes, and parenthesis.
+            <div v-if="contactForm.description.customError">
+              {{ contactForm.description.customErrorMessage }}
             </div>
           </div>
 
@@ -166,13 +166,20 @@
 
     </form>
 
+    <!-- <section class="textCenter paddingTop20 paddingBottom20">
+      <a @click="toggleUsageInstructions"
+         class="button showUsageInstructionsButton">
+        {{ usageInstructionsAction }} Usage Instructions
+      </a>
+    </section> -->
+
   </div>
 </template>
 
 <script>
   import plane from '../assets/plane.svg'
   import reset from '../assets/reset.svg'
-  import VueForm from '../../dist/vue-valid'
+  import VueForm from '../../dist/vueform'
 
   export default {
     data () {
@@ -191,8 +198,14 @@
           console.log('INVALID')
         }
       },
-      hasOneWordValidator (test) {
-        console.log(test)
+      hasOneWordValidator ({ target }) {
+        const id = target.getAttribute('id')
+        if (target.value.match(/\w+/)) {
+          this.contactForm.$updateCustomValidity(id)
+        } else {
+          const errorMessage = 'Description must contain at least one word.'
+          this.contactForm.$updateCustomValidity(id, errorMessage)
+        }
       }
     }
   }
@@ -205,6 +218,13 @@
     border-color: #ff4136;
     background-color: #FEE9E7;
     transition: all 0.2s;
+  }
+
+  .showUsageInstructionsButton {
+    border-radius: 20px;
+    padding: 12px 16px;
+    background-color: #a873d1;
+    transition: all 500ms ease-in-out;
   }
 
   form {

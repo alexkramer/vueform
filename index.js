@@ -1,3 +1,4 @@
+// This is the only way I've been able to copy the ValidityState object.
 function extractValidity(vs) {
   return {
     badInput: vs.badInput,
@@ -89,6 +90,7 @@ export default class VueForm {
     if (result) {
       if (result && typeof result === 'string') {
         this[field].$el.setCustomValidity(result)
+        this[field].customErrorMessage = result
       } else {
         if (result.valid) {
           this[field].$el.setCustomValidity('')
@@ -99,6 +101,7 @@ export default class VueForm {
       }
     } else {
       this[field].$el.setCustomValidity('')
+      this[field].customErrorMessage = null
     }
     Object.assign(this[field], extractValidity(this[field].$el.validity))
     this.$updateFormValidity(field)

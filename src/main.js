@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import App from './App'
-import VueForm from '../dist/vue-valid'
+import VueForm from '../dist/vueform'
 
 Vue.use(VueForm)
 
