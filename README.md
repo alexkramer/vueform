@@ -1,4 +1,4 @@
-# (vueform)[https://vueform.optick.io]
+# [vueform](https://vueform.optick.io)
 
 > Form validation for Vue.js powered by HTML5
 
