@@ -11,7 +11,7 @@ module.exports = {
       .assert.containsText('@contactForm', 'Email is required.')
       .assert.containsText('@contactForm', 'Phone is required.')
       .assert.containsText('@contactForm', 'Description is required.')
-      .assert.urlEquals(browser.page.home().url)
+      .assert.urlEquals(browser.page.home().url())
       .setValue('@email', 'notanaccount')
       .assert.containsText('@contactForm', 'Please enter a valid email address.')
       .api.end()
