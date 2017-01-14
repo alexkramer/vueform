@@ -1,6 +1,6 @@
 # [vueform](https://vueform.optick.io)
 
-> Form validation for Vue.js powered by HTML5
+> Form validation for [Vue.js](https://vuejs.org/) powered by HTML5
 
 ## Features
 
