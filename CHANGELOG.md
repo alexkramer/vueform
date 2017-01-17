@@ -1,4 +1,8 @@
-# Changelog for vueform
+# Changes to vueform
+
+## 1.1.0
+
+* Added [#1: Add polyfill for ValidityState.tooShort](https://github.com/optick/vueform/issues/1)
 
 ## 1.0.1
 

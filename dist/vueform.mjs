@@ -92,18 +92,35 @@ var set = function set(object, property, value, receiver) {
 };
 
 // This is the only way I've been able to copy the ValidityState object.
-function extractValidity(vs) {
+function extractValidity(el) {
+  var validity = el.validity;
+
+  // VaidityState.tooShort/minlength polyfill for older browsers.
+  var tooShort = validity.tooShort;
+  var valid = validity.valid;
+  var minlength = el.getAttribute('minlength');
+  if (minlength && typeof tooShort === 'undefined') {
+    tooShort = el.value.length < minlength;
+    if (tooShort) {
+      valid = false;
+      el.setCustomValidity(('\n        Please lengthen this text to ' + minlength + ' characters or more (you are\n        currently using ' + el.value.length + ' characters).\n      ').trim());
+    } else {
+      el.setCustomValidity('');
+    }
+  }
+
   return {
-    badInput: vs.badInput,
-    customError: vs.customError,
-    patternMismatch: vs.patternMismatch,
-    rangeOverflow: vs.rangeOverflow,
-    rangeUnderflow: vs.rangeUnderflow,
-    stepMismatch: vs.stepMismatch,
-    tooLong: vs.tooLong,
-    typeMismatch: vs.typeMismatch,
-    valid: vs.valid,
-    valueMissing: vs.valueMissing
+    badInput: validity.badInput,
+    customError: validity.customError,
+    patternMismatch: validity.patternMismatch,
+    rangeOverflow: validity.rangeOverflow,
+    rangeUnderflow: validity.rangeUnderflow,
+    stepMismatch: validity.stepMismatch,
+    tooLong: validity.tooLong,
+    tooShort: tooShort,
+    typeMismatch: validity.typeMismatch,
+    valid: valid,
+    valueMissing: validity.valueMissing
   };
 }
 
@@ -144,7 +161,7 @@ var VueForm = function () {
         this[field].$el.setCustomValidity('');
         this[field].customErrorMessage = null;
       }
-      Object.assign(this[field], extractValidity(this[field].$el.validity));
+      Object.assign(this[field], extractValidity(this[field].$el));
       this.$updateFormValidity(field);
     }
   }, {
@@ -198,7 +215,7 @@ var VueForm = function () {
                 if (id.indexOf('$') === -1) {
                   value[id].$wasFocused = false;
                   value[id].$el.classList.remove(value.$wasFocusedClass);
-                  Object.assign(value[id], extractValidity(value[id].$el.validity));
+                  Object.assign(value[id], extractValidity(value[id].$el));
                   value.$updateFormValidity(id);
                 }
               }
@@ -229,7 +246,7 @@ var VueForm = function () {
               //
               if ($el.form === el && $el.willValidate && $el.hasAttribute('id')) {
                 //
-                var field = Object.assign({ $el: $el }, extractValidity($el.validity));
+                var field = Object.assign({ $el: $el }, extractValidity($el));
                 var id = $el.getAttribute('id');
                 Vue.set(value, id, field);
                 value.$updateFormValidity(id);
@@ -247,7 +264,7 @@ var VueForm = function () {
                   var target = _ref3.target;
 
                   var id = target.getAttribute('id');
-                  Object.assign(value[id], extractValidity(target.validity));
+                  Object.assign(value[id], extractValidity(target));
                   value.$updateFormValidity(id);
                 });
               }

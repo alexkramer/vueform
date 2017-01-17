@@ -1,16 +1,36 @@
 // This is the only way I've been able to copy the ValidityState object.
-function extractValidity(vs) {
+function extractValidity(el) {
+  const validity = el.validity
+
+  // VaidityState.tooShort/minlength polyfill for older browsers.
+  let tooShort = validity.tooShort
+  let valid = validity.valid
+  const minlength = el.getAttribute('minlength')
+  if (minlength && typeof tooShort === 'undefined') {
+    tooShort = el.value.length < minlength
+    if (tooShort) {
+      valid = false
+      el.setCustomValidity(`
+        Please lengthen this text to ${minlength} characters or more (you are
+        currently using ${el.value.length} characters).
+      `.trim())
+    } else {
+      el.setCustomValidity('')
+    }
+  }
+
   return {
-    badInput: vs.badInput,
-    customError: vs.customError,
-    patternMismatch: vs.patternMismatch,
-    rangeOverflow: vs.rangeOverflow,
-    rangeUnderflow: vs.rangeUnderflow,
-    stepMismatch: vs.stepMismatch,
-    tooLong: vs.tooLong,
-    typeMismatch: vs.typeMismatch,
-    valid: vs.valid,
-    valueMissing: vs.valueMissing,
+    badInput: validity.badInput,
+    customError: validity.customError,
+    patternMismatch: validity.patternMismatch,
+    rangeOverflow: validity.rangeOverflow,
+    rangeUnderflow: validity.rangeUnderflow,
+    stepMismatch: validity.stepMismatch,
+    tooLong: validity.tooLong,
+    tooShort,
+    typeMismatch: validity.typeMismatch,
+    valid,
+    valueMissing: validity.valueMissing,
   }
 }
 
@@ -53,7 +73,7 @@ export default class VueForm {
             if (id.indexOf('$') === -1) {
               value[id].$wasFocused = false
               value[id].$el.classList.remove(value.$wasFocusedClass)
-              Object.assign(value[id], extractValidity(value[id].$el.validity))
+              Object.assign(value[id], extractValidity(value[id].$el))
               value.$updateFormValidity(id)
             }
           }
@@ -63,7 +83,7 @@ export default class VueForm {
           //
           if ($el.form === el && $el.willValidate && $el.hasAttribute('id')) {
             //
-            const field = Object.assign({ $el }, extractValidity($el.validity))
+            const field = Object.assign({ $el }, extractValidity($el))
             const id = $el.getAttribute('id')
             Vue.set(value, id, field)
             value.$updateFormValidity(id)
@@ -77,7 +97,7 @@ export default class VueForm {
 
             $el.addEventListener('input', ({ target }) => {
               const id = target.getAttribute('id')
-              Object.assign(value[id], extractValidity(target.validity))
+              Object.assign(value[id], extractValidity(target))
               value.$updateFormValidity(id)
             })
           }
@@ -103,7 +123,7 @@ export default class VueForm {
       this[field].$el.setCustomValidity('')
       this[field].customErrorMessage = null
     }
-    Object.assign(this[field], extractValidity(this[field].$el.validity))
+    Object.assign(this[field], extractValidity(this[field].$el))
     this.$updateFormValidity(field)
   }
 

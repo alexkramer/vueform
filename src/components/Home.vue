@@ -22,12 +22,16 @@
                  class="inputText widthTwelve"
                  v-model="contactData.name"
                  pattern="[A-Za-z\s'\-]+"
+                 minlength="3"
                  required>
 
           <div v-if="contactForm.$wasSubmitted"
                class="marginTop12 widthTwelve colorRed fontSize14">
             <div v-if="contactForm.name.valueMissing">
               Name is required.
+            </div>
+            <div v-if="contactForm.name.tooShort">
+              Please enter your first and last name.
             </div>
             <div v-if="contactForm.name.patternMismatch">
               Please use only letters, spaces, dashes, and apostrophes.
