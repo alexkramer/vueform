@@ -138,7 +138,7 @@
               Description is required.
             </div>
             <div v-if="contactForm.description.customError">
-              {{ contactForm.description.customErrorMessage }}
+              {{ contactForm.description.customMessage }}
             </div>
           </div>
 
@@ -204,10 +204,10 @@
       hasOneWordValidator ({ target }) {
         const id = target.getAttribute('id')
         if (target.value.match(/\w+/)) {
-          this.contactForm.$updateCustomValidity(id)
+          this.contactForm.$setCustomValidity(id)
         } else {
           const errorMessage = 'Description must contain at least one word.'
-          this.contactForm.$updateCustomValidity(id, errorMessage)
+          this.contactForm.$setCustomValidity(id, errorMessage)
         }
       }
     }

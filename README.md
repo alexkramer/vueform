@@ -95,13 +95,13 @@ VueForm properties:
 
 | Property        | Type    | Description                              |
 |-----------------|---------|------------------------------------------|
-| `$wasSubmitted` | boolean | True if the form was submitted           |
-| `$isInvalid`    | boolean | True if the form is invalid              |
-| `$isValid`      | boolean | True if the form is valid                |
-| `$invalidFields`| array   | A collection of names of invalid fields  |
+| `$wasSubmitted` | boolean | True if the form was submitted.          |
+| `$isInvalid`    | boolean | True if the form is invalid.             |
+| `$isValid`      | boolean | True if the form is valid.               |
+| `$invalidFields`| array   | A collection of names of invalid fields. |
 
 VueForm methods:
 
 | Method                  | Parameters | Description                           |
 |-------------------------|------------|---------------------------------------|
-| `$updateCustomValidity` | `field`: string, `result`: string or object | Used to manually update the validity state for a field, most likely from a custom validator outside of VueForm |
+| `$setCustomValidity` | `field`: string, `invalid`: boolean or string | A convenience wrapper for element.setCustomValidity(). Useful when updating the validity of a field based on a custom validator. |

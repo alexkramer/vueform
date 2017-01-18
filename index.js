@@ -106,22 +106,19 @@ export default class VueForm {
     })
   }
 
-  $updateCustomValidity (field, result) {
-    if (result) {
-      if (result && typeof result === 'string') {
-        this[field].$el.setCustomValidity(result)
-        this[field].customErrorMessage = result
+  $setCustomValidity (field, invalid) {
+    const isBoolean = typeof invalid === 'boolean'
+    const isNonEmptyString = typeof invalid === 'string' && invalid.length > 0
+    if (invalid && (isBoolean || isNonEmptyString)) {
+      if (isNonEmptyString) {
+        this[field].customMessage = invalid
+        this[field].$el.setCustomValidity(invalid)
       } else {
-        if (result.valid) {
-          this[field].$el.setCustomValidity('')
-        } else {
-          this[field].$el.setCustomValidity('Multiple errors')
-        }
-        Object.assign(this[field], result)
+        this[field].$el.setCustomValidity('Error')
       }
     } else {
+      delete this[field].customMessage
       this[field].$el.setCustomValidity('')
-      this[field].customErrorMessage = null
     }
     Object.assign(this[field], extractValidity(this[field].$el))
     this.$updateFormValidity(field)
