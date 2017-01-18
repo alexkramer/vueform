@@ -107,21 +107,23 @@ export default class VueForm {
   }
 
   $setCustomValidity (field, invalid) {
-    const isBoolean = typeof invalid === 'boolean'
-    const isNonEmptyString = typeof invalid === 'string' && invalid.length > 0
-    if (invalid && (isBoolean || isNonEmptyString)) {
-      if (isNonEmptyString) {
-        this[field].customMessage = invalid
-        this[field].$el.setCustomValidity(invalid)
+    if (this[field]) {
+      const isBoolean = typeof invalid === 'boolean'
+      const isNonEmptyString = typeof invalid === 'string' && invalid.length > 0
+      if (invalid && (isBoolean || isNonEmptyString)) {
+        if (isNonEmptyString) {
+          this[field].customMessage = invalid
+          this[field].$el.setCustomValidity(invalid)
+        } else {
+          this[field].$el.setCustomValidity('Error')
+        }
       } else {
-        this[field].$el.setCustomValidity('Error')
+        delete this[field].customMessage
+        this[field].$el.setCustomValidity('')
       }
-    } else {
-      delete this[field].customMessage
-      this[field].$el.setCustomValidity('')
+      Object.assign(this[field], extractValidity(this[field].$el))
+      this.$updateFormValidity(field)
     }
-    Object.assign(this[field], extractValidity(this[field].$el))
-    this.$updateFormValidity(field)
   }
 
   $updateFormValidity (field) {

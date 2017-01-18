@@ -1,5 +1,10 @@
 # Changes to vueform
 
+## 1.2.1
+
+* Added [#5: Check for field existence in $setCustomValidity in case it gets
+called before directive bind completes](https://github.com/optick/vueform/issues/5)
+
 ## 1.2.0
 
 * Added [#3: Rename $updateCustomValidity to $setCustomValidity](https://github.com/optick/vueform/issues/3)
