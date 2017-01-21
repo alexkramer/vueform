@@ -119,48 +119,48 @@
 
         <div class="paddingBottom10 paddingTop10">
           <label class="colorMidGray fontSize14 marginRight20">
-            <input id="email"
+            <input id="checkup"
                    type="checkbox"
                    name="reason"
-                   v-model="patientData.sex"
-                   class="inputCheckbox marginRight5 padding20"
-                   required>
+                   v-model="patientData.reason"
+                   value="checkup"
+                   class="inputCheckbox marginRight5 padding20">
               Checkup
           </label>
         </div>
 
         <div class="paddingBottom10 paddingTop10">
           <label class="colorMidGray fontSize14 marginRight20">
-            <input id="email"
+            <input id="illness"
                    type="checkbox"
                    name="reason"
-                   v-model="patientData.sex"
-                   class="inputCheckbox marginRight5 padding20"
-                   required>
+                   v-model="patientData.reason"
+                   value="illness"
+                   class="inputCheckbox marginRight5 padding20">
               Illness
           </label>
         </div>
 
         <div class="paddingBottom10 paddingTop10">
           <label class="colorMidGray fontSize14 marginRight20">
-            <input id="email"
+            <input id="pregnancy"
                    type="checkbox"
                    name="reason"
-                   v-model="patientData.sex"
-                   class="inputCheckbox marginRight5 padding20"
-                   required>
+                   v-model="patientData.reason"
+                   value="pregnancy"
+                   class="inputCheckbox marginRight5 padding20">
               Pregnancy
           </label>
         </div>
 
         <div class="paddingBottom10 paddingTop10">
           <label class="colorMidGray fontSize14 marginRight20">
-            <input id="email"
+            <input id="consultation"
                    type="checkbox"
                    name="reason"
-                   v-model="patientData.sex"
-                   class="inputCheckbox marginRight5 padding20"
-                   required>
+                   v-model="patientData.reason"
+                   value="consultation"
+                   class="inputCheckbox marginRight5 padding20">
               Consultation
           </label>
         </div>
@@ -168,21 +168,28 @@
         <div>
           <div class="paddingBottom10 paddingTop10">
             <label class="colorMidGray fontSize14 marginRight20">
-              <input id="email"
+              <input id="otherReasonCheckbox"
                      type="checkbox"
                      name="reason"
-                     v-model="patientData.sex"
+                     v-model="patientData.reason"
+                     value="other"
                      class="inputCheckbox marginRight5 padding20"
                      required>
-              <input id="name"
+              <input id="otherReason"
                     type="text"
                     class="inputText widthTen"
                     placeholder="Other"
-                    v-model="patientData.name"
-                    pattern="[A-Za-z\s'\-]+"
+                    v-model="patientData.otherReason"
                     minlength="3"
-                    required>
+                    :required="otherReasonRequired">
             </label>
+          </div>
+        </div>
+
+        <div v-if="patientForm.$wasSubmitted"
+             class="marginTop12 widthTwelve colorRed fontSize14">
+          <div v-if="patientForm.reason.valueMissing">
+            Reason is required.
           </div>
         </div>
 
@@ -190,11 +197,11 @@
 
       <!-- Submit button -->
       <button type="submit"
-              class="button circular floatRight width140 height50 fontSize20
+              class="button circular floatRight width150 height50 fontSize20
                      lineHeight32"
               :class="{ 'disabled': patientForm.$isInvalid }">
-        <div class="width30 fillWhite floatRight marginRight10 marginTop2"
-             v-html="">
+        <div class="width22 fillWhite floatRight marginRight10 marginTop4"
+             v-html="check">
         </div>
         Submit
       </button>
@@ -217,17 +224,28 @@
 <script>
   import VueForm from '../../dist/vueform'
   import reset from '../assets/reset.svg'
+  import check from '../assets/check.svg'
 
   export default {
     name: 'PatientForm',
     data () {
       return {
         reset,
+        check,
         patientData: {},
         patientForm: new VueForm()
       }
     },
+    computed: {
+      otherReasonRequired () {
+        const { reasons } = this.patientData
+        return reasons && reasons.contains('other')
+      }
+    },
     methods: {
+      otherReasonValidator () {
+        console.log('OTHER REASON VALIDATOR')
+      },
       submit () {
 
       }
