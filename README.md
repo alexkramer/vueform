@@ -48,12 +48,16 @@
    </form>
    ```
 
-4. Add a form field to the form. Make sure it has an `id`:
+4. Add a form field to the form. Make sure it has an `id` or `name` property so
+   that it can be identified:
 
    ```html
    <label for="name">Name:</label>
    <input type="text" id="name" v-model="contactData.name" required>
    ```
+
+   > **Note:** Validating grouped elements like radio buttons and checkboxes might
+   be easier if they all have the same name.
 
 5. By default, your form will be set to `noValidate` which tells the browser to
    *slow it's roll* and gives you more control over the validation process. This
