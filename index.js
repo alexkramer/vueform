@@ -126,7 +126,7 @@ export default class VueForm {
 
           // Only work with elements that belong to the form, have the ability
           // to be validated, and have and id or name property.
-          if ($el.form === el && $el.willValidate && hasIdentifier()) {
+          if ($el.form === el && $el.willValidate && hasIdentifier($el)) {
 
             // Create the field object and extract its validity state.
             const field = Object.assign({ $el }, extractValidity($el))
