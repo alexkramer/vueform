@@ -47,7 +47,7 @@
           </label>
         </div>
 
-        <div class="displayFlex lineHeight32 colorDarkGray" required>
+        <div class="displayFlex lineHeight32 colorDarkGray">
 
           <label class="marginRight30 cursorPointer displayFlex itemsCenter">
             <input id="female"
@@ -173,8 +173,7 @@
                        type="checkbox"
                        v-model="patientData.reasons"
                        value="other"
-                       class="floatLeft"
-                       required>
+                       class="floatLeft">
               </div>
               <input id="otherReason"
                     type="text"

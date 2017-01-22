@@ -1,5 +1,9 @@
 # Changes to vueform
 
+## 1.3.1
+
+* Fixed [#10: Update form validity after setting named validity](https://github.com/optick/vueform/issues/10)
+
 ## 1.3.0
 
 * Fixed [#7: Issue with implementing validation on multiple checkboxes](https://github.com/optick/vueform/issues/7)

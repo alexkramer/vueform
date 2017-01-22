@@ -223,6 +223,9 @@ export default class VueForm {
           Vue.set(this, name, validity)
         }
 
+        // Update the forms overall validity.
+        this.$updateFormValidity(name)
+
       }
     }
 
