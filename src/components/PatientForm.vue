@@ -1,8 +1,8 @@
 <template>
   <form @submit.prevent="submit"
         v-form="patientForm"
-        class="borderRadius25 marginRightAuto marginLeftAuto marginTop40
-               displayFlex bgWhisper">
+        class="borderRadius25 marginRightAuto marginLeftAuto displayFlex
+               bgWhisper">
 
     <div class="flex1 padding30">
 
@@ -47,29 +47,33 @@
           </label>
         </div>
 
-        <label class="colorMidGray fontSize14 marginRight20">
-          <input id="female"
-                 type="radio"
-                 name="sex"
-                 v-model="patientData.sex"
-                 class="inputRadio marginRight5 padding20"
-                 required>
-            Female
-        </label>
+        <div class="displayFlex lineHeight32 colorDarkGray" required>
 
-        <label class="colorMidGray fontSize14">
-          <input id="male"
-                 type="radio"
-                 name="sex"
-                 v-model="patientData.sex"
-                 class="inputRadio marginRight5"
-                 required>
-           Male
-        </label>
+          <label class="marginRight30 cursorPointer displayFlex itemsCenter">
+            <input id="female"
+                   type="radio"
+                   name="sex"
+                   v-model="patientData.sex"
+                   value="female"
+                   class="marginRight10">
+              <span class="paddingTop5">Female</span>
+          </label>
+
+          <label class="cursorPointer displayFlex itemsCenter">
+            <input id="male"
+                   type="radio"
+                   name="sex"
+                   v-model="patientData.sex"
+                   value="male"
+                   class="marginRight10">
+             <span class="paddingTop5">Male</span>
+          </label>
+
+        </div>
 
         <div v-if="patientForm.$wasSubmitted"
              class="marginTop12 widthTwelve colorRed fontSize14">
-          <div v-if="patientForm.email.valueMissing">
+          <div v-if="patientForm.sex.valueMissing">
             Sex is required.
           </div>
         </div>
@@ -80,25 +84,21 @@
       <div class="marginBottom30 widthTwelve">
 
         <div class="marginBottom10">
-          <label for="phone" class="colorMidGray fontSize14">
-            Your date of Birth
+          <label for="dob" class="colorMidGray fontSize14">
+            Your date of birth
           </label>
         </div>
 
-        <input id="phone"
+        <input id="dob"
                type="date"
                class="inputText widthTwelve"
-               v-model="patientData.phone"
-               pattern="^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$"
+               v-model="patientData.dob"
                required>
 
         <div v-if="patientForm.$wasSubmitted"
              class="marginTop12 widthTwelve colorRed fontSize14">
-          <div v-if="patientForm.phone.valueMissing">
-            Phone is required.
-          </div>
-          <div v-if="patientForm.phone.patternMismatch">
-            Please use only numbers, spaces, dashes, and parenthesis.
+          <div v-if="patientForm.dob.valueMissing">
+            Date of birth is required.
           </div>
         </div>
 
@@ -118,78 +118,76 @@
         </div>
 
         <div class="paddingBottom10 paddingTop10">
-          <label class="colorMidGray fontSize14 marginRight20">
+          <label class="colorDarkGray marginRight20 cursorPointer">
             <input id="checkup"
                    type="checkbox"
-                   name="reason"
-                   v-model="patientData.reason"
+                   v-model="patientData.reasons"
                    value="checkup"
-                   class="inputCheckbox marginRight5 padding20">
+                   class="marginRight10">
               Checkup
           </label>
         </div>
 
         <div class="paddingBottom10 paddingTop10">
-          <label class="colorMidGray fontSize14 marginRight20">
+          <label class="colorDarkGray marginRight20 cursorPointer">
             <input id="illness"
                    type="checkbox"
-                   name="reason"
-                   v-model="patientData.reason"
+                   v-model="patientData.reasons"
                    value="illness"
-                   class="inputCheckbox marginRight5 padding20">
+                   class="marginRight10">
               Illness
           </label>
         </div>
 
         <div class="paddingBottom10 paddingTop10">
-          <label class="colorMidGray fontSize14 marginRight20">
+          <label class="colorDarkGray marginRight20 cursorPointer">
             <input id="pregnancy"
                    type="checkbox"
-                   name="reason"
-                   v-model="patientData.reason"
+                   v-model="patientData.reasons"
                    value="pregnancy"
-                   class="inputCheckbox marginRight5 padding20">
+                   class="marginRight10">
               Pregnancy
           </label>
         </div>
 
         <div class="paddingBottom10 paddingTop10">
-          <label class="colorMidGray fontSize14 marginRight20">
+          <label class="colorDarkGray marginRight20 cursorPointer">
             <input id="consultation"
                    type="checkbox"
-                   name="reason"
-                   v-model="patientData.reason"
+                   v-model="patientData.reasons"
                    value="consultation"
-                   class="inputCheckbox marginRight5 padding20">
+                   class="marginRight10">
               Consultation
           </label>
         </div>
 
         <div>
-          <div class="paddingBottom10 paddingTop10">
-            <label class="colorMidGray fontSize14 marginRight20">
-              <input id="otherReasonCheckbox"
-                     type="checkbox"
-                     name="reason"
-                     v-model="patientData.reason"
-                     value="other"
-                     class="inputCheckbox marginRight5 padding20"
-                     required>
+          <div class="paddingBottom10 paddingTop10 displayFlex itemsCenter">
+              <div class="width30">
+                <input id="otherReasonCheckbox"
+                       type="checkbox"
+                       v-model="patientData.reasons"
+                       value="other"
+                       class="floatLeft"
+                       required>
+              </div>
               <input id="otherReason"
                     type="text"
-                    class="inputText widthTen"
                     placeholder="Other"
                     v-model="patientData.otherReason"
                     minlength="3"
+                    class="inputText widthTwelve"
                     :required="otherReasonRequired">
-            </label>
           </div>
         </div>
 
         <div v-if="patientForm.$wasSubmitted"
              class="marginTop12 widthTwelve colorRed fontSize14">
-          <div v-if="patientForm.reason.valueMissing">
+          <div v-if="patientData.reasons.length === 0">
             Reason is required.
+          </div>
+          <div v-if="otherReasonRequired && !patientData.otherReason">
+            Please specify the other reason for your visit.
           </div>
         </div>
 
@@ -232,22 +230,23 @@
       return {
         reset,
         check,
-        patientData: {},
-        patientForm: new VueForm()
+        patientData: { reasons: [] },
+        patientForm: new VueForm({ required: ['sex', 'reasons'] })
       }
     },
     computed: {
       otherReasonRequired () {
         const { reasons } = this.patientData
-        return reasons && reasons.contains('other')
+        return reasons.indexOf('other') !== -1
       }
     },
     methods: {
-      otherReasonValidator () {
-        console.log('OTHER REASON VALIDATOR')
-      },
       submit () {
-
+        if (this.patientForm.$isValid) {
+          console.log('VALID')
+        } else {
+          console.log('INVALID')
+        }
       }
     }
   }

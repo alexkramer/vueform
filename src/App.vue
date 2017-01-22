@@ -21,8 +21,9 @@
   Vue.use(VueRouter)
 
   const routes = [
-    { name: 'ContactForm', path: '/', component: ContactForm },
-    { name: 'PatientForm', path: '/patient', component: PatientForm }
+    { name: 'ContactForm', path: '/contact', component: ContactForm },
+    { name: 'PatientForm', path: '/patient', component: PatientForm },
+    { path: '*', redirect: { name: 'ContactForm' } }
   ]
 
   export default {

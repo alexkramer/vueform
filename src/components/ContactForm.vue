@@ -1,8 +1,8 @@
 <template>
   <form @submit.prevent="send"
         v-form="contactForm"
-        class="borderRadius25 marginRightAuto marginLeftAuto marginTop40
-               displayFlex bgWhisper">
+        class="borderRadius25 marginRightAuto marginLeftAuto displayFlex
+               bgWhisper">
 
     <div class="flex1 padding30">
 

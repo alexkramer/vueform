@@ -56,9 +56,6 @@
    <input type="text" id="name" v-model="contactData.name" required>
    ```
 
-   > **Note:** Validating grouped elements like radio buttons and checkboxes might
-   be easier if they all have the same name.
-
 5. By default, your form will be set to `noValidate` which tells the browser to
    *slow it's roll* and gives you more control over the validation process. This
    means the browser won't show validation error messages. You can either
