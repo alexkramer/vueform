@@ -87,7 +87,7 @@ export default class VueForm {
           // Reset $wasFocused property and remove the corresponding class
           // from each child node.
           for (const id of Object.keys(value)) {
-            if (id.indexOf('$') === -1) {
+            if (id.indexOf('$') === -1 && value[id].$el) {
               value[id].$wasFocused = false
               value[id].$el.classList.remove(value.$wasFocusedClass)
               Object.assign(value[id], extractValidity(value[id].$el))

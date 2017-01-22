@@ -287,7 +287,7 @@ var VueForm = function () {
               for (var _iterator = Object.keys(value)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                 var id = _step.value;
 
-                if (id.indexOf('$') === -1) {
+                if (id.indexOf('$') === -1 && value[id].$el) {
                   value[id].$wasFocused = false;
                   value[id].$el.classList.remove(value.$wasFocusedClass);
                   Object.assign(value[id], extractValidity(value[id].$el));

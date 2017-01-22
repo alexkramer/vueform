@@ -48,13 +48,22 @@
    </form>
    ```
 
-4. Add a form field to the form. Make sure it has an `id` or `name` property so
-   that it can be identified:
+4. Add a form field to the form. Make sure it has an `id` property so that
+   it can be identified:
 
    ```html
    <label for="name">Name:</label>
    <input type="text" id="name" v-model="contactData.name" required>
    ```
+
+   > **Note:** When you're grouping radio buttons or checkboxes by the same name
+     property and you want to validate that the group has a value (i.e. one
+     of the elements is checked), simply pass the name of the group to the
+     VueForm instance in the `required` array:
+
+     ```js
+     patientForm: new VueForm({ required: ['sex', 'reasons'] })
+     ```
 
 5. By default, your form will be set to `noValidate` which tells the browser to
    *slow it's roll* and gives you more control over the validation process. This
@@ -88,21 +97,23 @@ VueForm constructor options (with default values):
 {
   wasFocusedClass: `wasFocused`
   wasSubmittedClass: `wasSubmitted`
-  noValidate: true
+  noValidate: true,
+  $required: []
 }
 ```
 
 VueForm properties:
 
-| Property        | Type    | Description                              |
-|-----------------|---------|------------------------------------------|
-| `$wasSubmitted` | boolean | True if the form was submitted.          |
-| `$isInvalid`    | boolean | True if the form is invalid.             |
-| `$isValid`      | boolean | True if the form is valid.               |
-| `$invalidFields`| array   | A collection of names of invalid fields. |
+| Property         | Type    | Description                              |
+|------------------|---------|------------------------------------------|
+| `$wasSubmitted`  | boolean | True if the form was submitted.          |
+| `$isInvalid`     | boolean | True if the form is invalid.             |
+| `$isValid`       | boolean | True if the form is valid.               |
+| `$invalidFields` | array   | A collection of names of invalid fields. |
+| `$requiredFields`| array   | A collection of names of required fields (those that aren't individually required, but require a value for the overall named group, i.e. checkboxes and radio buttons). |
 
 VueForm methods:
 
-| Method                  | Parameters | Description                           |
-|-------------------------|------------|---------------------------------------|
+| Method               | Parameters | Description                           |
+|----------------------|------------|---------------------------------------|
 | `$setCustomValidity` | `field`: string, `invalid`: boolean or string | A convenience wrapper for element.setCustomValidity(). Useful when updating the validity of a field based on a custom validator. |

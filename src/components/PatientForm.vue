@@ -51,8 +51,8 @@
 
           <label class="marginRight30 cursorPointer displayFlex itemsCenter">
             <input id="female"
-                   type="radio"
                    name="sex"
+                   type="radio"
                    v-model="patientData.sex"
                    value="female"
                    class="marginRight10">
@@ -61,8 +61,8 @@
 
           <label class="cursorPointer displayFlex itemsCenter">
             <input id="male"
-                   type="radio"
                    name="sex"
+                   type="radio"
                    v-model="patientData.sex"
                    value="male"
                    class="marginRight10">
@@ -120,6 +120,7 @@
         <div class="paddingBottom10 paddingTop10">
           <label class="colorDarkGray marginRight20 cursorPointer">
             <input id="checkup"
+                   name="reasons"
                    type="checkbox"
                    v-model="patientData.reasons"
                    value="checkup"
@@ -131,6 +132,7 @@
         <div class="paddingBottom10 paddingTop10">
           <label class="colorDarkGray marginRight20 cursorPointer">
             <input id="illness"
+                   name="reasons"
                    type="checkbox"
                    v-model="patientData.reasons"
                    value="illness"
@@ -142,6 +144,7 @@
         <div class="paddingBottom10 paddingTop10">
           <label class="colorDarkGray marginRight20 cursorPointer">
             <input id="pregnancy"
+                   name="reasons"
                    type="checkbox"
                    v-model="patientData.reasons"
                    value="pregnancy"
@@ -153,6 +156,7 @@
         <div class="paddingBottom10 paddingTop10">
           <label class="colorDarkGray marginRight20 cursorPointer">
             <input id="consultation"
+                   name="reasons"
                    type="checkbox"
                    v-model="patientData.reasons"
                    value="consultation"
@@ -165,6 +169,7 @@
           <div class="paddingBottom10 paddingTop10 displayFlex itemsCenter">
               <div class="width30">
                 <input id="otherReasonCheckbox"
+                       name="reasons"
                        type="checkbox"
                        v-model="patientData.reasons"
                        value="other"
@@ -183,7 +188,7 @@
 
         <div v-if="patientForm.$wasSubmitted"
              class="marginTop12 widthTwelve colorRed fontSize14">
-          <div v-if="patientData.reasons.length === 0">
+          <div v-if="patientForm.reasons.valueMissing">
             Reason is required.
           </div>
           <div v-if="otherReasonRequired && !patientData.otherReason">
