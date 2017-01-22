@@ -215,7 +215,7 @@ export default class VueForm {
       if (this.$requiredFields.indexOf(name) !== -1) {
 
         // Set the validity state of the named group.
-        const valid = !!this.$el[name].value
+        const valid = new FormData(this.$el).has(name)
         const validity = { valid, valueMissing: !valid  }
         if (this[name]) {
           Object.assign(this[name], validity)
