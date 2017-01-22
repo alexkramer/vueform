@@ -8,7 +8,7 @@
           <h1 class="marginBottom10 marginTop0">
             vueform
           </h1>
-          <div class="fontSize18 fontWeight500 lineHeight22">
+          <div class="fontSize18 fontWeight500 lineHeight32">
             Form validation for
             <a href="https://vuejs.org" class="link border">Vue.js</a>
             powered by HTML5 from
@@ -34,6 +34,7 @@
   import githubSvg from '../assets/github.svg'
 
   export default {
+    name: 'SiteHeader',
     data () {
       return { githubSvg }
     }

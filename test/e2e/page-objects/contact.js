@@ -1,6 +1,6 @@
 module.exports = {
   url() {
-    return `${this.api.globals.devServerURL}/`;
+    return `${this.api.globals.devServerURL}/contact`;
   },
   elements: [
     {

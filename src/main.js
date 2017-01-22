@@ -5,4 +5,4 @@ import VueForm from '../dist/vueform'
 Vue.use(VueForm)
 
 /* eslint-disable no-new */
-new Vue({ el: '#app', render: h => h(App) })
+new Vue(App).$mount('#app')

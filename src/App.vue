@@ -2,19 +2,34 @@
   <div class="heightFull paddingLeft20 paddingRight20 maxWidth900
               marginLeftAuto marginRightAuto">
     <site-header></site-header>
-    <home></home>
+    <form-nav></form-nav>
+    <router-view></router-view>
     <site-footer></site-footer>
   </div>
 </template>
 
 <script>
+  import Vue from 'vue'
+  import VueRouter from 'vue-router'
+
   import SiteHeader from './components/SiteHeader'
-  import Home from './components/Home'
+  import FormNav from './components/FormNav'
   import SiteFooter from './components/SiteFooter'
+  import ContactForm from './components/ContactForm'
+  import PatientForm from './components/PatientForm'
+
+  Vue.use(VueRouter)
+
+  const routes = [
+    { name: 'ContactForm', path: '/contact', component: ContactForm },
+    { name: 'PatientForm', path: '/patient', component: PatientForm },
+    { path: '*', redirect: { name: 'ContactForm' } }
+  ]
 
   export default {
-    name: 'app',
-    components: { SiteHeader, Home, SiteFooter }
+    name: 'App',
+    router: new VueRouter({ mode: 'history', routes }),
+    components: { SiteHeader, SiteFooter, FormNav }
   }
 </script>
 
@@ -53,7 +68,7 @@
     fill: rgba(244, 245, 249, 1);
   }
   a.link.border {
-    border-bottom: 2px solid rgba(100, 255, 200, .4);
+    border-bottom: 1px solid rgba(100, 255, 200, .4);
   }
 
   footer::selection,
@@ -91,5 +106,30 @@
       transform: scale3d(0.96, 0.96, 1);
       box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
     }
+  }
+
+
+
+  .wasSubmitted :invalid:not(:focus),
+  .wasFocused:invalid:not(:focus) {
+    color: #ff4136;
+    border-color: #ff4136;
+    background-color: #FEE9E7;
+    transition: all 0.2s;
+  }
+
+  .showUsageInstructionsButton {
+    border-radius: 20px;
+    padding: 12px 16px;
+    background-color: #a873d1;
+    transition: all 500ms ease-in-out;
+  }
+
+  form {
+    box-shadow: 0 18px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  textarea {
+    max-width: 548px;
   }
 </style>

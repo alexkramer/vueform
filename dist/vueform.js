@@ -97,7 +97,14 @@ var set = function set(object, property, value, receiver) {
   return value;
 };
 
-// This is the only way I've been able to copy the ValidityState object.
+/**
+ * extractValidity - Extracts the ValidityState information from a given
+ * object into an object suitable for manipulation.
+ *
+ * @param  {HTMLElement} el A DOM element containing a ValidityState object.
+ * @return {object}         A non-read-only object mimicing the ValidityState
+ *                          object for the given element.
+ */
 function extractValidity(el) {
   var validity = el.validity;
 
@@ -131,17 +138,20 @@ function extractValidity(el) {
 }
 
 var VueForm = function () {
-  function VueForm() {
-    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
-      wasFocusedClass: 'wasFocused',
-      wasSubmittedClass: 'wasSubmitted',
-      noValidate: true
-    };
+  function VueForm(options) {
     classCallCheck(this, VueForm);
 
-    this.$noValidate = options.noValidate;
-    this.$wasFocusedClass = options.wasFocusedClass;
-    this.$wasSubmittedClass = options.wasSubmittedClass;
+    var defaults$$1 = {
+      wasFocusedClass: 'wasFocused',
+      wasSubmittedClass: 'wasSubmitted',
+      noValidate: true,
+      required: []
+    };
+    Object.assign(defaults$$1, options);
+    this.$noValidate = defaults$$1.noValidate;
+    this.$wasFocusedClass = defaults$$1.wasFocusedClass;
+    this.$wasSubmittedClass = defaults$$1.wasSubmittedClass;
+    this.$requiredFields = defaults$$1.required;
     this.$wasSubmitted = false;
     this.$isInvalid = false;
     this.$isValid = true;
@@ -150,6 +160,20 @@ var VueForm = function () {
 
   createClass(VueForm, [{
     key: '$setCustomValidity',
+
+
+    /**
+     * setCustomValidity - A wrapper for HTML5s setCustomValidity function so that
+     * the end user can trigger a custom error without an error message, the
+     * custom error message is accessible through the form object, and the overall
+     * form validity is updated.
+     *
+     * @param {string}          field   The identifier for the field you wish to
+     *                                  set the validity for.
+     * @param {boolean|string}  invalid Whether the field is invalid (true), or
+     *                                  not (false), or the custom error message
+     *                                  for an invalid field.
+     */
     value: function $setCustomValidity(field, invalid) {
       if (this[field]) {
         var isBoolean = typeof invalid === 'boolean';
@@ -169,6 +193,17 @@ var VueForm = function () {
         this.$updateFormValidity(field);
       }
     }
+
+    /**
+     * updateFormValidity - Updates the overall validity of the form based on the
+     * existing validity state of its fields and the updated validity state of
+     * the given field.
+     *
+     * @param {string} field The identifier for the field whose validity state
+     *                       has updated and has consequently triggered the update
+     *                       of the overall forms validity.
+     */
+
   }, {
     key: '$updateFormValidity',
     value: function $updateFormValidity(field) {
@@ -185,25 +220,66 @@ var VueForm = function () {
         this.$invalidFields.push(field);
       }
     }
+
+    /**
+     * $updateNamedValidity - For the use case of requiring a value for a set of
+     * checkboxes or radio buttons with the same name, VueForm provides the
+     * validity state of the overall group using the name as the identifier. This
+     * function updates this validity state.
+     *
+     * @param {HTMLElement} el  The DOM element that may trigger an update to the
+    *                            validity of the named group.
+     * @param {Vue}         Vue The Vue.js instance given when this plugin is
+     *                          installed.
+     */
+
+  }, {
+    key: '$updateNamedValidity',
+    value: function $updateNamedValidity(el, Vue) {
+
+      // Check if the element has a name
+      if (el.hasAttribute('name')) {
+        var name = el.getAttribute('name');
+
+        // Check if the named group was marked as required.
+        if (this.$requiredFields.indexOf(name) !== -1) {
+
+          // Set the validity state of the named group.
+          var valid = new FormData(this.$el).has(name);
+          var validity = { valid: valid, valueMissing: !valid };
+          if (this[name]) {
+            Object.assign(this[name], validity);
+          } else {
+            Vue.set(this, name, validity);
+          }
+        }
+      }
+    }
   }], [{
     key: 'install',
     value: function install(Vue) {
+
       // v-form directive.
       Vue.directive('form', {
+
+        // Setup the form object when the directive is first bound to the
+        // form element.
         bind: function bind(el, _ref) {
           var value = _ref.value;
 
           value.$el = el;
           value.$el.noValidate = value.$noValidate;
 
-          //
+          // Update the forms $wasSubmitted state and apply the appropriate CSS
+          // class when the forms submit event is triggered.
           value.$el.addEventListener('submit', function () {
             value.$wasSubmitted = true;
             value.$el.classList.add(value.$wasSubmittedClass);
           });
 
+          // Update the form and child field state and remove any corresponding
+          // CSS classes when the forms reset event is triggered.
           value.$el.addEventListener('reset', function () {
-            // Reset $wasSubmitted property.
             value.$wasSubmitted = false;
             value.$el.classList.remove(value.$wasSubmittedClass);
 
@@ -217,7 +293,7 @@ var VueForm = function () {
               for (var _iterator = Object.keys(value)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                 var id = _step.value;
 
-                if (id.indexOf('$') === -1) {
+                if (id.indexOf('$') === -1 && value[id].$el) {
                   value[id].$wasFocused = false;
                   value[id].$el.classList.remove(value.$wasFocusedClass);
                   Object.assign(value[id], extractValidity(value[id].$el));
@@ -240,43 +316,52 @@ var VueForm = function () {
             }
           });
 
+          // Go through each field within the form, set up its state within
+          // the form object, and listen to input or change events to keep its
+          // state in sync.
           var _iteratorNormalCompletion2 = true;
           var _didIteratorError2 = false;
           var _iteratorError2 = undefined;
 
           try {
-            var _loop = function _loop() {
+            for (var _iterator2 = el.querySelectorAll('input, textarea, select')[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
               var $el = _step2.value;
 
-              //
+
+              // Only work with elements that belong to the form, have the ability
+              // to be validated, and have and id or name property.
               if ($el.form === el && $el.willValidate && $el.hasAttribute('id')) {
-                //
-                var field = Object.assign({ $el: $el }, extractValidity($el));
-                var id = $el.getAttribute('id');
-                Vue.set(value, id, field);
-                value.$updateFormValidity(id);
+                (function () {
 
-                // Add wasFocused class to element when focus event is triggered.
-                $el.addEventListener('focus', function (_ref2) {
-                  var target = _ref2.target;
-
+                  // Create the field object and extract its validity state.
+                  var field = Object.assign({ $el: $el }, extractValidity($el));
                   var id = $el.getAttribute('id');
-                  value[id].$wasFocused = true;
-                  target.classList.add(value.$wasFocusedClass);
-                });
-
-                $el.addEventListener('input', function (_ref3) {
-                  var target = _ref3.target;
-
-                  var id = target.getAttribute('id');
-                  Object.assign(value[id], extractValidity(target));
+                  Vue.set(value, id, field);
                   value.$updateFormValidity(id);
-                });
-              }
-            };
+                  value.$updateNamedValidity($el, Vue);
 
-            for (var _iterator2 = el.querySelectorAll('input, textarea, select')[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-              _loop();
+                  // Add wasFocused class to element when focus event is triggered.
+                  $el.addEventListener('focus', function (_ref2) {
+                    var target = _ref2.target;
+
+                    value[id].$wasFocused = true;
+                    target.classList.add(value.$wasFocusedClass);
+                  });
+
+                  // On change or input events, update the field and form validity
+                  // state.
+                  var type = $el.getAttribute('type');
+                  var isCheckable = ['radio', 'checkbox'].indexOf(type) !== -1;
+                  var eventType = isCheckable ? 'change' : 'input';
+                  $el.addEventListener(eventType, function (_ref3) {
+                    var target = _ref3.target;
+
+                    Object.assign(value[id], extractValidity(target));
+                    value.$updateFormValidity(id);
+                    value.$updateNamedValidity(target, Vue);
+                  });
+                })();
+              }
             }
           } catch (err) {
             _didIteratorError2 = true;

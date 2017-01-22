@@ -1,8 +1,13 @@
 # Changes to vueform
 
+## 1.3.0
+
+* Fixed [#7: Issue with implementing validation on multiple checkboxes](https://github.com/optick/vueform/issues/7)
+* Fixed [#8: Listen to change event instead of input for checkboxes and radio buttons](https://github.com/optick/vueform/issues/8)
+
 ## 1.2.1
 
-* Added [#5: Check for field existence in $setCustomValidity in case it gets
+* Fixed [#5: Check for field existence in $setCustomValidity in case it gets
 called before directive bind completes](https://github.com/optick/vueform/issues/5)
 
 ## 1.2.0
