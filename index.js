@@ -193,6 +193,15 @@ export default class VueForm {
     }
   }
 
+  $isFieldRequired(name) {
+    return this.$requiredFields.filter(field => {
+      const isDynamic = field.name && field.name === name && field.required()
+      if (field === name || isDynamic) {
+        return field
+      }
+    }).length > 0
+  }
+
 
   /**
    * $updateNamedValidity - For the use case of requiring a value for a set of
@@ -212,7 +221,7 @@ export default class VueForm {
       const name = el.getAttribute('name')
 
       // Check if the named group was marked as required.
-      if (this.$requiredFields.indexOf(name) !== -1) {
+      if (this.$isFieldRequired(name)) {
 
         // Set the validity state of the named group.
         const valid = new FormData(this.$el).has(name)
