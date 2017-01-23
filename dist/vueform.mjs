@@ -217,8 +217,10 @@ var VueForm = function () {
   }, {
     key: '$isFieldRequired',
     value: function $isFieldRequired(name) {
+      console.log('field', name);
       return this.$requiredFields.filter(function (field) {
         var isDynamic = field.name && field.name === name && field.required();
+        console.log('enter', field, name);
         if (field === name || isDynamic) {
           return field;
         }
@@ -232,7 +234,7 @@ var VueForm = function () {
      * function updates this validity state.
      *
      * @param {HTMLElement} el  The DOM element that may trigger an update to the
-    *                            validity of the named group.
+     *                          validity of the named group.
      * @param {Vue}         Vue The Vue.js instance given when this plugin is
      *                          installed.
      */
@@ -337,23 +339,30 @@ var VueForm = function () {
 
               // Only work with elements that belong to the form, have the ability
               // to be validated, and have and id or name property.
-              if ($el.form === el && $el.willValidate && $el.hasAttribute('id')) {
+              if ($el.form === el && $el.willValidate) {
                 (function () {
+                  var id = void 0;
 
-                  // Create the field object and extract its validity state.
-                  var field = Object.assign({ $el: $el }, extractValidity($el));
-                  var id = $el.getAttribute('id');
-                  Vue.set(value, id, field);
-                  value.$updateFormValidity(id);
+                  if ($el.hasAttribute('id')) {
+                    // Create the field object and extract its validity state.
+                    var field = Object.assign({ $el: $el }, extractValidity($el));
+                    id = $el.getAttribute('id');
+                    Vue.set(value, id, field);
+                    value.$updateFormValidity(id);
+                  }
+
+                  //
                   value.$updateNamedValidity($el, Vue);
 
-                  // Add wasFocused class to element when focus event is triggered.
-                  $el.addEventListener('focus', function (_ref2) {
-                    var target = _ref2.target;
+                  if (id) {
+                    // Add wasFocused class to element when focus event is triggered.
+                    $el.addEventListener('focus', function (_ref2) {
+                      var target = _ref2.target;
 
-                    value[id].$wasFocused = true;
-                    target.classList.add(value.$wasFocusedClass);
-                  });
+                      value[id].$wasFocused = true;
+                      target.classList.add(value.$wasFocusedClass);
+                    });
+                  }
 
                   // On change or input events, update the field and form validity
                   // state.
@@ -363,8 +372,10 @@ var VueForm = function () {
                   $el.addEventListener(eventType, function (_ref3) {
                     var target = _ref3.target;
 
-                    Object.assign(value[id], extractValidity(target));
-                    value.$updateFormValidity(id);
+                    if (id) {
+                      Object.assign(value[id], extractValidity(target));
+                      value.$updateFormValidity(id);
+                    }
                     value.$updateNamedValidity(target, Vue);
                   });
                 })();
