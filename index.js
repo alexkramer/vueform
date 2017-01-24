@@ -73,6 +73,10 @@ export default class VueForm {
         value.$el = el
         value.$el.noValidate = value.$noValidate
 
+        // Pre-populate required fields with an empty object in case they are
+        // dynamically inserted.
+        value.$requiredFields.forEach(field => value[field.name || field] = {})
+
         // Update the forms $wasSubmitted state and apply the appropriate CSS
         // class when the forms submit event is triggered.
         value.$el.addEventListener('submit', () => {
@@ -204,10 +208,8 @@ export default class VueForm {
   }
 
   $isFieldRequired(name) {
-    console.log('field', name)
     return this.$requiredFields.filter(field => {
       const isDynamic = field.name && field.name === name && field.required()
-      console.log('enter', field, name)
       if (field === name || isDynamic) {
         return field
       }

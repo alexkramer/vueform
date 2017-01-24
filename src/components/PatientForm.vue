@@ -268,7 +268,7 @@
       const requiredFields = [
         'sex',
         'reasons',
-        { name: 'preganant', required }
+        { name: 'pregnant', required }
       ]
       return {
         reset,

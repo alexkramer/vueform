@@ -219,10 +219,8 @@ var VueForm = function () {
   }, {
     key: '$isFieldRequired',
     value: function $isFieldRequired(name) {
-      console.log('field', name);
       return this.$requiredFields.filter(function (field) {
         var isDynamic = field.name && field.name === name && field.required();
-        console.log('enter', field, name);
         if (field === name || isDynamic) {
           return field;
         }
@@ -280,6 +278,12 @@ var VueForm = function () {
 
           value.$el = el;
           value.$el.noValidate = value.$noValidate;
+
+          // Pre-populate required fields with an empty object in case they are
+          // dynamically inserted.
+          value.$requiredFields.forEach(function (field) {
+            return value[field.name || field] = {};
+          });
 
           // Update the forms $wasSubmitted state and apply the appropriate CSS
           // class when the forms submit event is triggered.
