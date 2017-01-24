@@ -8,6 +8,6 @@ describe('ContactForm.vue', () => {
       render: (h) => h(ContactForm)
     })
     expect(vm.$el.querySelector('label[for=name]').textContent)
-      .to.equal('Your name')
+      .to.contain('Your name')
   })
 })

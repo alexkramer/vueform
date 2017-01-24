@@ -1,3 +1,5 @@
+import 'babel-polyfill';
+
 /**
  * extractValidity - Extracts the ValidityState information from a given
  * object into an object suitable for manipulation.

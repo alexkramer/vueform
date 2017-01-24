@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global.VueValid = factory());
-}(this, (function () { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('babel-polyfill')) :
+  typeof define === 'function' && define.amd ? define(['babel-polyfill'], factory) :
+  (global.VueValid = factory(global.babelPolyfill));
+}(this, (function (babelPolyfill) { 'use strict';
 
 var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
