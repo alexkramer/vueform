@@ -5,7 +5,8 @@ module.exports = {
   elements: [
     {
       patientForm: 'form',
-      name: '#name'
+      name: '#name',
+      female: 'input[value=female]'
     }
   ]
 };
