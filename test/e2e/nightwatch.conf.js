@@ -10,7 +10,7 @@ module.exports = {
   custom_assertions_path: ['test/e2e/custom-assertions'],
   page_objects_path : ["test/e2e/page-objects"],
 
-  test_workers: true,
+  // test_workers: true,
 
   selenium: {
     start_process: typeof process.env.SELENIUM_HUB_HOST === 'undefined',
