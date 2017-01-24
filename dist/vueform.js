@@ -220,6 +220,16 @@ var VueForm = function () {
         this.$invalidFields.push(field);
       }
     }
+
+    /**
+     * $isFieldRequired - Checks if a given named group has been manually
+     * designated as required through the VueForm constructor options.
+     *
+     * @param   {string} name The name of the field to be checked.
+     *
+     * @returns {boolean}     True if the field is required, false otherwise.
+     */
+
   }, {
     key: '$isFieldRequired',
     value: function $isFieldRequired(name) {
@@ -273,13 +283,13 @@ var VueForm = function () {
     value: function install(Vue) {
 
       // v-form directive.
-      Vue.directive('form', {
+      Vue.directive('form', function (el, _ref) {
+        var value = _ref.value;
+
 
         // Setup the form object when the directive is first bound to the
         // form element.
-        bind: function bind(el, _ref) {
-          var value = _ref.value;
-
+        if (!value.$el) {
           value.$el = el;
           value.$el.noValidate = value.$noValidate;
 
@@ -334,75 +344,75 @@ var VueForm = function () {
               }
             }
           });
+        }
 
-          // Go through each field within the form, set up its state within
-          // the form object, and listen to input or change events to keep its
-          // state in sync.
-          var _iteratorNormalCompletion2 = true;
-          var _didIteratorError2 = false;
-          var _iteratorError2 = undefined;
+        // Go through each field within the form, set up its state within
+        // the form object, and listen to input or change events to keep its
+        // state in sync.
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
 
-          try {
-            for (var _iterator2 = el.querySelectorAll('input, textarea, select')[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-              var $el = _step2.value;
+        try {
+          for (var _iterator2 = el.querySelectorAll('input, textarea, select')[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var $el = _step2.value;
 
 
-              // Only work with elements that belong to the form, have the ability
-              // to be validated, and have and id or name property.
-              if ($el.form === el && $el.willValidate) {
-                (function () {
-                  var id = void 0;
+            // Only work with elements that belong to the form, have the ability
+            // to be validated, and have and id or name property.
+            if ($el.form === el && $el.willValidate) {
+              (function () {
+                var id = $el.getAttribute('id');
+                var isUnregistered = id && !value[id];
 
-                  if ($el.hasAttribute('id')) {
-                    // Create the field object and extract its validity state.
-                    var field = Object.assign({ $el: $el }, extractValidity($el));
-                    id = $el.getAttribute('id');
-                    Vue.set(value, id, field);
-                    value.$updateFormValidity(id);
-                  }
+                //
+                if (isUnregistered) {
 
-                  //
-                  value.$updateNamedValidity($el, Vue);
+                  // Create the field object and extract its validity state.
+                  var field = Object.assign({ $el: $el }, extractValidity($el));
+                  Vue.set(value, id, field);
+                  value.$updateFormValidity(id);
+
+                  // Add wasFocused class to element when focus event is triggered.
+                  $el.addEventListener('focus', function (_ref2) {
+                    var target = _ref2.target;
+
+                    value[id].$wasFocused = true;
+                    target.classList.add(value.$wasFocusedClass);
+                  });
+                }
+
+                //
+                value.$updateNamedValidity($el, Vue);
+
+                // On change or input events, update the field and form validity
+                // state.
+                var type = $el.getAttribute('type');
+                var isCheckable = ['radio', 'checkbox'].indexOf(type) !== -1;
+                var eventType = isCheckable ? 'change' : 'input';
+                $el.addEventListener(eventType, function (_ref3) {
+                  var target = _ref3.target;
 
                   if (id) {
-                    // Add wasFocused class to element when focus event is triggered.
-                    $el.addEventListener('focus', function (_ref2) {
-                      var target = _ref2.target;
-
-                      value[id].$wasFocused = true;
-                      target.classList.add(value.$wasFocusedClass);
-                    });
+                    Object.assign(value[id], extractValidity(target));
+                    value.$updateFormValidity(id);
                   }
-
-                  // On change or input events, update the field and form validity
-                  // state.
-                  var type = $el.getAttribute('type');
-                  var isCheckable = ['radio', 'checkbox'].indexOf(type) !== -1;
-                  var eventType = isCheckable ? 'change' : 'input';
-                  $el.addEventListener(eventType, function (_ref3) {
-                    var target = _ref3.target;
-
-                    if (id) {
-                      Object.assign(value[id], extractValidity(target));
-                      value.$updateFormValidity(id);
-                    }
-                    value.$updateNamedValidity(target, Vue);
-                  });
-                })();
-              }
+                  value.$updateNamedValidity(target, Vue);
+                });
+              })();
             }
-          } catch (err) {
-            _didIteratorError2 = true;
-            _iteratorError2 = err;
+          }
+        } catch (err) {
+          _didIteratorError2 = true;
+          _iteratorError2 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+              _iterator2.return();
+            }
           } finally {
-            try {
-              if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                _iterator2.return();
-              }
-            } finally {
-              if (_didIteratorError2) {
-                throw _iteratorError2;
-              }
+            if (_didIteratorError2) {
+              throw _iteratorError2;
             }
           }
         }

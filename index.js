@@ -65,11 +65,11 @@ export default class VueForm {
   static install (Vue) {
 
     // v-form directive.
-    Vue.directive('form', {
+    Vue.directive('form', (el, { value}) => {
 
       // Setup the form object when the directive is first bound to the
       // form element.
-      bind (el, { value }) {
+      if (!value.$el) {
         value.$el = el
         value.$el.noValidate = value.$noValidate
 
@@ -101,52 +101,54 @@ export default class VueForm {
             }
           }
         })
+      }
 
-        // Go through each field within the form, set up its state within
-        // the form object, and listen to input or change events to keep its
-        // state in sync.
-        for (const $el of el.querySelectorAll('input, textarea, select')) {
+      // Go through each field within the form, set up its state within
+      // the form object, and listen to input or change events to keep its
+      // state in sync.
+      for (const $el of el.querySelectorAll('input, textarea, select')) {
 
-          // Only work with elements that belong to the form, have the ability
-          // to be validated, and have and id or name property.
-          if ($el.form === el && $el.willValidate) {
-            let id
+        // Only work with elements that belong to the form, have the ability
+        // to be validated, and have and id or name property.
+        if ($el.form === el && $el.willValidate) {
+          const id = $el.getAttribute('id')
+          const isUnregistered = id && !value[id]
 
-            if ($el.hasAttribute('id')) {
-              // Create the field object and extract its validity state.
-              const field = Object.assign({ $el }, extractValidity($el))
-              id = $el.getAttribute('id')
-              Vue.set(value, id, field)
-              value.$updateFormValidity(id)
-            }
+          //
+          if (isUnregistered) {
 
-            //
-            value.$updateNamedValidity($el, Vue)
+            // Create the field object and extract its validity state.
+            const field = Object.assign({ $el }, extractValidity($el))
+            Vue.set(value, id, field)
+            value.$updateFormValidity(id)
 
-            if (id) {
-              // Add wasFocused class to element when focus event is triggered.
-              $el.addEventListener('focus', ({ target }) => {
-                value[id].$wasFocused = true
-                target.classList.add(value.$wasFocusedClass)
-              })
-            }
-
-            // On change or input events, update the field and form validity
-            // state.
-            const type = $el.getAttribute('type')
-            const isCheckable = ['radio', 'checkbox'].indexOf(type) !== -1
-            const eventType = isCheckable ? 'change' : 'input'
-            $el.addEventListener(eventType, ({ target }) => {
-              if (id) {
-                Object.assign(value[id], extractValidity(target))
-                value.$updateFormValidity(id)
-              }
-              value.$updateNamedValidity(target, Vue)
+            // Add wasFocused class to element when focus event is triggered.
+            $el.addEventListener('focus', ({ target }) => {
+              value[id].$wasFocused = true
+              target.classList.add(value.$wasFocusedClass)
             })
+
           }
 
+          //
+          value.$updateNamedValidity($el, Vue)
+
+          // On change or input events, update the field and form validity
+          // state.
+          const type = $el.getAttribute('type')
+          const isCheckable = ['radio', 'checkbox'].indexOf(type) !== -1
+          const eventType = isCheckable ? 'change' : 'input'
+          $el.addEventListener(eventType, ({ target }) => {
+            if (id) {
+              Object.assign(value[id], extractValidity(target))
+              value.$updateFormValidity(id)
+            }
+            value.$updateNamedValidity(target, Vue)
+          })
         }
+
       }
+
     })
 
   }
@@ -207,6 +209,15 @@ export default class VueForm {
     }
   }
 
+
+  /**
+   * $isFieldRequired - Checks if a given named group has been manually
+   * designated as required through the VueForm constructor options.
+   *
+   * @param   {string} name The name of the field to be checked.
+   *
+   * @returns {boolean}     True if the field is required, false otherwise.
+   */
   $isFieldRequired(name) {
     return this.$requiredFields.filter(field => {
       const isDynamic = field.name && field.name === name && field.required()

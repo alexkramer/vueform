@@ -62,7 +62,8 @@
      VueForm instance in the `required` array:
 
      ```js
-     patientForm: new VueForm({ required: ['sex', 'reasons'] })
+     const reasons = { name: 'reasons', required: () => isReasonsRequired }
+     patientForm: new VueForm({ required: ['sex', reasons] })
      ```
 
 5. By default, your form will be set to `noValidate` which tells the browser to
