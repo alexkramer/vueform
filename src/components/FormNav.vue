@@ -1,10 +1,10 @@
 <template>
-  <div class="nav displayFlex marginTop20 marginBottom25">
+  <div class="nav displayFlex marginTop20 marginBottom25 fontSize14">
     <router-link to="/contact" class="link marginRight20">
-      ContactForm
+      Contact Form
     </router-link>
     <router-link to="/patient" class="link">
-      PatientForm
+      Patient Form
     </router-link>
   </div>
 </template>
@@ -19,7 +19,7 @@
   .nav .link {
     background-color: rgba(255, 255, 255, .1);
     border-radius: 25px;
-    padding: 5px 15px;
+    padding: 8px 16px;
     transition: all 0.5s ease-in-out;
 
     &:hover {
