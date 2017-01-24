@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global.VueValid = factory());
-}(this, (function () { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('babel-polyfill')) :
+  typeof define === 'function' && define.amd ? define(['babel-polyfill'], factory) :
+  (global.VueValid = factory(global.babelPolyfill));
+}(this, (function (babelPolyfill) { 'use strict';
 
 var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -222,13 +222,33 @@ var VueForm = function () {
     }
 
     /**
+     * $isFieldRequired - Checks if a given named group has been manually
+     * designated as required through the VueForm constructor options.
+     *
+     * @param   {string} name The name of the field to be checked.
+     *
+     * @returns {boolean}     True if the field is required, false otherwise.
+     */
+
+  }, {
+    key: '$isFieldRequired',
+    value: function $isFieldRequired(name) {
+      return this.$requiredFields.filter(function (field) {
+        var isDynamic = field.name && field.name === name && field.required();
+        if (field === name || isDynamic) {
+          return field;
+        }
+      }).length > 0;
+    }
+
+    /**
      * $updateNamedValidity - For the use case of requiring a value for a set of
      * checkboxes or radio buttons with the same name, VueForm provides the
      * validity state of the overall group using the name as the identifier. This
      * function updates this validity state.
      *
      * @param {HTMLElement} el  The DOM element that may trigger an update to the
-    *                            validity of the named group.
+     *                          validity of the named group.
      * @param {Vue}         Vue The Vue.js instance given when this plugin is
      *                          installed.
      */
@@ -242,7 +262,7 @@ var VueForm = function () {
         var name = el.getAttribute('name');
 
         // Check if the named group was marked as required.
-        if (this.$requiredFields.indexOf(name) !== -1) {
+        if (this.$isFieldRequired(name)) {
 
           // Set the validity state of the named group.
           var valid = new FormData(this.$el).has(name);
@@ -263,15 +283,21 @@ var VueForm = function () {
     value: function install(Vue) {
 
       // v-form directive.
-      Vue.directive('form', {
+      Vue.directive('form', function (el, _ref) {
+        var value = _ref.value;
+
 
         // Setup the form object when the directive is first bound to the
         // form element.
-        bind: function bind(el, _ref) {
-          var value = _ref.value;
-
+        if (!value.$el) {
           value.$el = el;
           value.$el.noValidate = value.$noValidate;
+
+          // Pre-populate required fields with an empty object in case they are
+          // dynamically inserted.
+          value.$requiredFields.forEach(function (field) {
+            return value[field.name || field] = {};
+          });
 
           // Update the forms $wasSubmitted state and apply the appropriate CSS
           // class when the forms submit event is triggered.
@@ -318,30 +344,34 @@ var VueForm = function () {
               }
             }
           });
+        }
 
-          // Go through each field within the form, set up its state within
-          // the form object, and listen to input or change events to keep its
-          // state in sync.
-          var _iteratorNormalCompletion2 = true;
-          var _didIteratorError2 = false;
-          var _iteratorError2 = undefined;
+        // Go through each field within the form, set up its state within
+        // the form object, and listen to input or change events to keep its
+        // state in sync.
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
 
-          try {
-            for (var _iterator2 = el.querySelectorAll('input, textarea, select')[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-              var $el = _step2.value;
+        try {
+          for (var _iterator2 = el.querySelectorAll('input, textarea, select')[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var $el = _step2.value;
 
 
-              // Only work with elements that belong to the form, have the ability
-              // to be validated, and have and id or name property.
-              if ($el.form === el && $el.willValidate && $el.hasAttribute('id')) {
-                (function () {
+            // Only work with elements that belong to the form, have the ability
+            // to be validated, and have and id or name property.
+            if ($el.form === el && $el.willValidate) {
+              (function () {
+                var id = $el.getAttribute('id');
+                var isUnregistered = id && !value[id];
+
+                //
+                if (isUnregistered) {
 
                   // Create the field object and extract its validity state.
                   var field = Object.assign({ $el: $el }, extractValidity($el));
-                  var id = $el.getAttribute('id');
                   Vue.set(value, id, field);
                   value.$updateFormValidity(id);
-                  value.$updateNamedValidity($el, Vue);
 
                   // Add wasFocused class to element when focus event is triggered.
                   $el.addEventListener('focus', function (_ref2) {
@@ -350,34 +380,39 @@ var VueForm = function () {
                     value[id].$wasFocused = true;
                     target.classList.add(value.$wasFocusedClass);
                   });
+                }
 
-                  // On change or input events, update the field and form validity
-                  // state.
-                  var type = $el.getAttribute('type');
-                  var isCheckable = ['radio', 'checkbox'].indexOf(type) !== -1;
-                  var eventType = isCheckable ? 'change' : 'input';
-                  $el.addEventListener(eventType, function (_ref3) {
-                    var target = _ref3.target;
+                //
+                value.$updateNamedValidity($el, Vue);
 
+                // On change or input events, update the field and form validity
+                // state.
+                var type = $el.getAttribute('type');
+                var isCheckable = ['radio', 'checkbox'].indexOf(type) !== -1;
+                var eventType = isCheckable ? 'change' : 'input';
+                $el.addEventListener(eventType, function (_ref3) {
+                  var target = _ref3.target;
+
+                  if (id) {
                     Object.assign(value[id], extractValidity(target));
                     value.$updateFormValidity(id);
-                    value.$updateNamedValidity(target, Vue);
-                  });
-                })();
-              }
+                  }
+                  value.$updateNamedValidity(target, Vue);
+                });
+              })();
             }
-          } catch (err) {
-            _didIteratorError2 = true;
-            _iteratorError2 = err;
+          }
+        } catch (err) {
+          _didIteratorError2 = true;
+          _iteratorError2 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+              _iterator2.return();
+            }
           } finally {
-            try {
-              if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                _iterator2.return();
-              }
-            } finally {
-              if (_didIteratorError2) {
-                throw _iteratorError2;
-              }
+            if (_didIteratorError2) {
+              throw _iteratorError2;
             }
           }
         }

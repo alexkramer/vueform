@@ -1,5 +1,11 @@
 # Changes to vueform
 
+## 1.4.0
+
+* Fixed [#15: Add required fields to the form object on bind](https://github.com/optick/vueform/issues/15)
+* Fixed [#13: Allow form directive to handle DOM updates and new fields](https://github.com/optick/vueform/issues/13)
+* Fixed [#12: Allow arrays in required array so that users can supply a callback that determines if the field is required or not](https://github.com/optick/vueform/issues/12)
+
 ## 1.3.1
 
 * Fixed [#10: Update form validity after setting named validity](https://github.com/optick/vueform/issues/10)

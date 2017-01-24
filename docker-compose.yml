@@ -1,0 +1,25 @@
+frontend:
+  build: .
+  labels:
+    - convox.port.443.protocol=https
+  environment:
+    - SELENIUM_HUB_HOST=hub
+    - SERVER_HOST=frontend
+  ports:
+    - 443:8080
+  links:
+    - hub
+hub:
+  image: selenium/hub
+  ports:
+    - 4444
+chrome:
+  image: selenium/node-chrome
+  links:
+    - hub
+    - frontend
+firefox:
+  image: selenium/node-firefox
+  links:
+    - hub
+    - frontend

@@ -1,6 +1,6 @@
 {
   "name": "vueform",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "description": "Form validation for Vue.js powered by HTML5",
   "keywords": [
     "vue",
@@ -12,6 +12,7 @@
     "html5",
     "validitystate"
   ],
+  "license": "MIT",
   "main": "dist/vueform.js",
   "module": "dist/vueform.mjs",
   "jsnext:main": "dist/vueform.mjs",
@@ -39,12 +40,13 @@
     "babel-plugin-external-helpers": "^6.18.0",
     "babel-plugin-istanbul": "^3.0.0",
     "babel-plugin-transform-runtime": "^6.0.0",
+    "babel-polyfill": "^6.22.0",
     "babel-preset-es2015": "^6.0.0",
     "babel-preset-stage-2": "^6.0.0",
     "babel-register": "^6.0.0",
     "chai": "^3.5.0",
     "chalk": "^1.1.3",
-    "chromedriver": "^2.21.2",
+    "chromedriver": "^2.27.2",
     "connect-history-api-fallback": "^1.1.0",
     "cross-env": "^3.1.3",
     "cross-spawn": "^4.0.2",
@@ -101,7 +103,7 @@
     "webpack": "^1.13.2",
     "webpack-dev-middleware": "^1.8.3",
     "webpack-hot-middleware": "^2.12.2",
-    "webpack-merge": "^0.14.1"
+    "webpack-merge": "^2.4.0"
   },
   "engines": {
     "node": ">= 4.0.0",

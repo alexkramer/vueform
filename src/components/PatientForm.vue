@@ -50,8 +50,7 @@
         <div class="displayFlex lineHeight32 colorDarkGray">
 
           <label class="marginRight30 cursorPointer displayFlex itemsCenter">
-            <input id="female"
-                   name="sex"
+            <input name="sex"
                    type="radio"
                    v-model="patientData.sex"
                    value="female"
@@ -60,8 +59,7 @@
           </label>
 
           <label class="cursorPointer displayFlex itemsCenter">
-            <input id="male"
-                   name="sex"
+            <input name="sex"
                    type="radio"
                    v-model="patientData.sex"
                    value="male"
@@ -75,6 +73,47 @@
              class="marginTop12 widthTwelve colorRed fontSize14">
           <div v-if="patientForm.sex.valueMissing">
             Sex is required.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Pregnant field -->
+      <div v-if="patientData.sex === 'female'"
+           class="marginBottom30 widthTwelve">
+
+        <div class="marginBottom10">
+          <label for="email" class="colorMidGray fontSize14">
+            Are you pregnant?
+          </label>
+        </div>
+
+        <div class="displayFlex lineHeight32 colorDarkGray">
+
+          <label class="marginRight30 cursorPointer displayFlex itemsCenter">
+            <input name="pregnant"
+                   type="radio"
+                   v-model="patientData.pregnant"
+                   value="yes"
+                   class="marginRight10">
+              <span class="paddingTop5">Yes</span>
+          </label>
+
+          <label class="cursorPointer displayFlex itemsCenter">
+            <input name="pregnant"
+                   type="radio"
+                   v-model="patientData.pregnant"
+                   value="no"
+                   class="marginRight10">
+             <span class="paddingTop5">No</span>
+          </label>
+
+        </div>
+
+        <div v-if="patientForm.$wasSubmitted"
+             class="marginTop12 widthTwelve colorRed fontSize14">
+          <div v-if="patientForm.pregnant.valueMissing">
+            Please specify whether you are pregnant or not.
           </div>
         </div>
 
@@ -119,8 +158,7 @@
 
         <div class="paddingBottom10 paddingTop10">
           <label class="colorDarkGray marginRight20 cursorPointer">
-            <input id="checkup"
-                   name="reasons"
+            <input name="reasons"
                    type="checkbox"
                    v-model="patientData.reasons"
                    value="checkup"
@@ -131,8 +169,7 @@
 
         <div class="paddingBottom10 paddingTop10">
           <label class="colorDarkGray marginRight20 cursorPointer">
-            <input id="illness"
-                   name="reasons"
+            <input name="reasons"
                    type="checkbox"
                    v-model="patientData.reasons"
                    value="illness"
@@ -143,8 +180,7 @@
 
         <div class="paddingBottom10 paddingTop10">
           <label class="colorDarkGray marginRight20 cursorPointer">
-            <input id="pregnancy"
-                   name="reasons"
+            <input name="reasons"
                    type="checkbox"
                    v-model="patientData.reasons"
                    value="pregnancy"
@@ -155,8 +191,7 @@
 
         <div class="paddingBottom10 paddingTop10">
           <label class="colorDarkGray marginRight20 cursorPointer">
-            <input id="consultation"
-                   name="reasons"
+            <input name="reasons"
                    type="checkbox"
                    v-model="patientData.reasons"
                    value="consultation"
@@ -168,20 +203,18 @@
         <div>
           <div class="paddingBottom10 paddingTop10 displayFlex itemsCenter">
               <div class="width30">
-                <input id="otherReasonCheckbox"
-                       name="reasons"
+                <input name="reasons"
                        type="checkbox"
                        v-model="patientData.reasons"
                        value="other"
                        class="floatLeft">
               </div>
-              <input id="otherReason"
-                    type="text"
-                    placeholder="Other"
-                    v-model="patientData.otherReason"
-                    minlength="3"
-                    class="inputText widthTwelve"
-                    :required="otherReasonRequired">
+              <input type="text"
+                     placeholder="Other"
+                     v-model="patientData.otherReason"
+                     minlength="3"
+                     class="inputText widthTwelve"
+                     :required="otherReasonRequired">
           </div>
         </div>
 
@@ -231,11 +264,17 @@
   export default {
     name: 'PatientForm',
     data () {
+      const required = () => this.patientData.sex === 'female'
+      const requiredFields = [
+        'sex',
+        'reasons',
+        { name: 'pregnant', required }
+      ]
       return {
         reset,
         check,
-        patientData: { reasons: [] },
-        patientForm: new VueForm({ required: ['sex', 'reasons'] })
+        patientData: { reasons: [], sex: null },
+        patientForm: new VueForm({ required: requiredFields })
       }
     },
     computed: {
