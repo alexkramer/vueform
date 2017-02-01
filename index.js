@@ -65,86 +65,90 @@ export default class VueForm {
   static install (Vue) {
 
     // v-form directive.
-    Vue.directive('form', (el, { value}) => {
+    Vue.directive('form', (el, { value }) => {
 
-      // Setup the form object when the directive is first bound to the
-      // form element.
-      if (!value.$el) {
-        value.$el = el
-        value.$el.noValidate = value.$noValidate
+      if (value instanceof VueForm) {
 
-        // Pre-populate required fields with an empty object in case they are
-        // dynamically inserted.
-        value.$requiredFields.forEach(field => value[field.name || field] = {})
+        // Setup the form object when the directive is first bound to the
+        // form element.
+        if (!value.$el) {
+          value.$el = el
+          value.$el.noValidate = value.$noValidate
 
-        // Update the forms $wasSubmitted state and apply the appropriate CSS
-        // class when the forms submit event is triggered.
-        value.$el.addEventListener('submit', () => {
-          value.$wasSubmitted = true
-          value.$el.classList.add(value.$wasSubmittedClass)
-        })
+          // Pre-populate required fields with an empty object in case they are
+          // dynamically inserted.
+          value.$requiredFields.forEach(field => value[field.name || field] = {})
 
-        // Update the form and child field state and remove any corresponding
-        // CSS classes when the forms reset event is triggered.
-        value.$el.addEventListener('reset', () => {
-          value.$wasSubmitted = false
-          value.$el.classList.remove(value.$wasSubmittedClass)
-
-          // Reset $wasFocused property and remove the corresponding class
-          // from each child node.
-          for (const id of Object.keys(value)) {
-            if (id.indexOf('$') === -1 && value[id].$el) {
-              value[id].$wasFocused = false
-              value[id].$el.classList.remove(value.$wasFocusedClass)
-              Object.assign(value[id], extractValidity(value[id].$el))
-              value.$updateFormValidity(id)
-            }
-          }
-        })
-      }
-
-      // Go through each field within the form, set up its state within
-      // the form object, and listen to input or change events to keep its
-      // state in sync.
-      for (const $el of el.querySelectorAll('input, textarea, select')) {
-
-        // Only work with elements that belong to the form, have the ability
-        // to be validated, and have and id or name property.
-        if ($el.form === el && $el.willValidate) {
-          const id = $el.getAttribute('id')
-          const isUnregistered = id && !value[id]
-
-          //
-          if (isUnregistered) {
-
-            // Create the field object and extract its validity state.
-            const field = Object.assign({ $el }, extractValidity($el))
-            Vue.set(value, id, field)
-            value.$updateFormValidity(id)
-
-            // Add wasFocused class to element when focus event is triggered.
-            $el.addEventListener('focus', ({ target }) => {
-              value[id].$wasFocused = true
-              target.classList.add(value.$wasFocusedClass)
-            })
-
-          }
-
-          //
-          value.$updateNamedValidity($el, Vue)
-
-          // On change or input events, update the field and form validity
-          // state.
-          const type = $el.getAttribute('type')
-          const isCheckable = ['radio', 'checkbox'].indexOf(type) !== -1
-          const eventType = isCheckable ? 'change' : 'input'
-          $el.addEventListener(eventType, ({ target }) => {
-            if (id) {
-              Object.assign(value[id], extractValidity(target))
-              value.$updateFormValidity(id)
-            }
-            value.$updateNamedValidity(target, Vue)
+          // Update the forms $wasSubmitted state and apply the appropriate CSS
+          // class when the forms submit event is triggered.
+          value.$el.addEventListener('submit', () => {
+            value.$wasSubmitted = true
+            value.$el.classList.add(value.$wasSubmittedClass)
           })
+
+          // Update the form and child field state and remove any corresponding
+          // CSS classes when the forms reset event is triggered.
+          value.$el.addEventListener('reset', () => {
+            value.$wasSubmitted = false
+            value.$el.classList.remove(value.$wasSubmittedClass)
+
+            // Reset $wasFocused property and remove the corresponding class
+            // from each child node.
+            for (const id of Object.keys(value)) {
+              if (id.indexOf('$') === -1 && value[id].$el) {
+                value[id].$wasFocused = false
+                value[id].$el.classList.remove(value.$wasFocusedClass)
+                Object.assign(value[id], extractValidity(value[id].$el))
+                value.$updateFormValidity(id)
+              }
+            }
+          })
+        }
+
+        // Go through each field within the form, set up its state within
+        // the form object, and listen to input or change events to keep its
+        // state in sync.
+        for (const $el of el.querySelectorAll('input, textarea, select')) {
+
+          // Only work with elements that belong to the form, have the ability
+          // to be validated, and have and id or name property.
+          if ($el.form === el && $el.willValidate) {
+            const id = $el.getAttribute('id')
+            const isUnregistered = id && !value[id]
+
+            //
+            if (isUnregistered) {
+
+              // Create the field object and extract its validity state.
+              const field = Object.assign({ $el }, extractValidity($el))
+              Vue.set(value, id, field)
+              value.$updateFormValidity(id)
+
+              // Add wasFocused class to element when focus event is triggered.
+              $el.addEventListener('focus', ({ target }) => {
+                value[id].$wasFocused = true
+                target.classList.add(value.$wasFocusedClass)
+              })
+
+            }
+
+            //
+            value.$updateNamedValidity($el, Vue)
+
+            // On change or input events, update the field and form validity
+            // state.
+            const type = $el.getAttribute('type')
+            const isCheckable = ['radio', 'checkbox'].indexOf(type) !== -1
+            const eventType = isCheckable ? 'change' : 'input'
+            $el.addEventListener(eventType, ({ target }) => {
+              if (id) {
+                Object.assign(value[id], extractValidity(target))
+                value.$updateFormValidity(id)
+              }
+              value.$updateNamedValidity(target, Vue)
+            })
+          }
+
         }
 
       }

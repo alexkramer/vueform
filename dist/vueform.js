@@ -287,132 +287,135 @@ var VueForm = function () {
         var value = _ref.value;
 
 
-        // Setup the form object when the directive is first bound to the
-        // form element.
-        if (!value.$el) {
-          value.$el = el;
-          value.$el.noValidate = value.$noValidate;
+        if (value instanceof VueForm) {
 
-          // Pre-populate required fields with an empty object in case they are
-          // dynamically inserted.
-          value.$requiredFields.forEach(function (field) {
-            return value[field.name || field] = {};
-          });
+          // Setup the form object when the directive is first bound to the
+          // form element.
+          if (!value.$el) {
+            value.$el = el;
+            value.$el.noValidate = value.$noValidate;
 
-          // Update the forms $wasSubmitted state and apply the appropriate CSS
-          // class when the forms submit event is triggered.
-          value.$el.addEventListener('submit', function () {
-            value.$wasSubmitted = true;
-            value.$el.classList.add(value.$wasSubmittedClass);
-          });
+            // Pre-populate required fields with an empty object in case they are
+            // dynamically inserted.
+            value.$requiredFields.forEach(function (field) {
+              return value[field.name || field] = {};
+            });
 
-          // Update the form and child field state and remove any corresponding
-          // CSS classes when the forms reset event is triggered.
-          value.$el.addEventListener('reset', function () {
-            value.$wasSubmitted = false;
-            value.$el.classList.remove(value.$wasSubmittedClass);
+            // Update the forms $wasSubmitted state and apply the appropriate CSS
+            // class when the forms submit event is triggered.
+            value.$el.addEventListener('submit', function () {
+              value.$wasSubmitted = true;
+              value.$el.classList.add(value.$wasSubmittedClass);
+            });
 
-            // Reset $wasFocused property and remove the corresponding class
-            // from each child node.
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
+            // Update the form and child field state and remove any corresponding
+            // CSS classes when the forms reset event is triggered.
+            value.$el.addEventListener('reset', function () {
+              value.$wasSubmitted = false;
+              value.$el.classList.remove(value.$wasSubmittedClass);
 
-            try {
-              for (var _iterator = Object.keys(value)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                var id = _step.value;
+              // Reset $wasFocused property and remove the corresponding class
+              // from each child node.
+              var _iteratorNormalCompletion = true;
+              var _didIteratorError = false;
+              var _iteratorError = undefined;
 
-                if (id.indexOf('$') === -1 && value[id].$el) {
-                  value[id].$wasFocused = false;
-                  value[id].$el.classList.remove(value.$wasFocusedClass);
-                  Object.assign(value[id], extractValidity(value[id].$el));
-                  value.$updateFormValidity(id);
-                }
-              }
-            } catch (err) {
-              _didIteratorError = true;
-              _iteratorError = err;
-            } finally {
               try {
-                if (!_iteratorNormalCompletion && _iterator.return) {
-                  _iterator.return();
-                }
-              } finally {
-                if (_didIteratorError) {
-                  throw _iteratorError;
-                }
-              }
-            }
-          });
-        }
+                for (var _iterator = Object.keys(value)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                  var id = _step.value;
 
-        // Go through each field within the form, set up its state within
-        // the form object, and listen to input or change events to keep its
-        // state in sync.
-        var _iteratorNormalCompletion2 = true;
-        var _didIteratorError2 = false;
-        var _iteratorError2 = undefined;
-
-        try {
-          for (var _iterator2 = el.querySelectorAll('input, textarea, select')[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-            var $el = _step2.value;
-
-
-            // Only work with elements that belong to the form, have the ability
-            // to be validated, and have and id or name property.
-            if ($el.form === el && $el.willValidate) {
-              (function () {
-                var id = $el.getAttribute('id');
-                var isUnregistered = id && !value[id];
-
-                //
-                if (isUnregistered) {
-
-                  // Create the field object and extract its validity state.
-                  var field = Object.assign({ $el: $el }, extractValidity($el));
-                  Vue.set(value, id, field);
-                  value.$updateFormValidity(id);
-
-                  // Add wasFocused class to element when focus event is triggered.
-                  $el.addEventListener('focus', function (_ref2) {
-                    var target = _ref2.target;
-
-                    value[id].$wasFocused = true;
-                    target.classList.add(value.$wasFocusedClass);
-                  });
-                }
-
-                //
-                value.$updateNamedValidity($el, Vue);
-
-                // On change or input events, update the field and form validity
-                // state.
-                var type = $el.getAttribute('type');
-                var isCheckable = ['radio', 'checkbox'].indexOf(type) !== -1;
-                var eventType = isCheckable ? 'change' : 'input';
-                $el.addEventListener(eventType, function (_ref3) {
-                  var target = _ref3.target;
-
-                  if (id) {
-                    Object.assign(value[id], extractValidity(target));
+                  if (id.indexOf('$') === -1 && value[id].$el) {
+                    value[id].$wasFocused = false;
+                    value[id].$el.classList.remove(value.$wasFocusedClass);
+                    Object.assign(value[id], extractValidity(value[id].$el));
                     value.$updateFormValidity(id);
                   }
-                  value.$updateNamedValidity(target, Vue);
-                });
-              })();
-            }
+                }
+              } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+              } finally {
+                try {
+                  if (!_iteratorNormalCompletion && _iterator.return) {
+                    _iterator.return();
+                  }
+                } finally {
+                  if (_didIteratorError) {
+                    throw _iteratorError;
+                  }
+                }
+              }
+            });
           }
-        } catch (err) {
-          _didIteratorError2 = true;
-          _iteratorError2 = err;
-        } finally {
+
+          // Go through each field within the form, set up its state within
+          // the form object, and listen to input or change events to keep its
+          // state in sync.
+          var _iteratorNormalCompletion2 = true;
+          var _didIteratorError2 = false;
+          var _iteratorError2 = undefined;
+
           try {
-            if (!_iteratorNormalCompletion2 && _iterator2.return) {
-              _iterator2.return();
+            for (var _iterator2 = el.querySelectorAll('input, textarea, select')[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+              var $el = _step2.value;
+
+
+              // Only work with elements that belong to the form, have the ability
+              // to be validated, and have and id or name property.
+              if ($el.form === el && $el.willValidate) {
+                (function () {
+                  var id = $el.getAttribute('id');
+                  var isUnregistered = id && !value[id];
+
+                  //
+                  if (isUnregistered) {
+
+                    // Create the field object and extract its validity state.
+                    var field = Object.assign({ $el: $el }, extractValidity($el));
+                    Vue.set(value, id, field);
+                    value.$updateFormValidity(id);
+
+                    // Add wasFocused class to element when focus event is triggered.
+                    $el.addEventListener('focus', function (_ref2) {
+                      var target = _ref2.target;
+
+                      value[id].$wasFocused = true;
+                      target.classList.add(value.$wasFocusedClass);
+                    });
+                  }
+
+                  //
+                  value.$updateNamedValidity($el, Vue);
+
+                  // On change or input events, update the field and form validity
+                  // state.
+                  var type = $el.getAttribute('type');
+                  var isCheckable = ['radio', 'checkbox'].indexOf(type) !== -1;
+                  var eventType = isCheckable ? 'change' : 'input';
+                  $el.addEventListener(eventType, function (_ref3) {
+                    var target = _ref3.target;
+
+                    if (id) {
+                      Object.assign(value[id], extractValidity(target));
+                      value.$updateFormValidity(id);
+                    }
+                    value.$updateNamedValidity(target, Vue);
+                  });
+                })();
+              }
             }
+          } catch (err) {
+            _didIteratorError2 = true;
+            _iteratorError2 = err;
           } finally {
-            if (_didIteratorError2) {
-              throw _iteratorError2;
+            try {
+              if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                _iterator2.return();
+              }
+            } finally {
+              if (_didIteratorError2) {
+                throw _iteratorError2;
+              }
             }
           }
         }
