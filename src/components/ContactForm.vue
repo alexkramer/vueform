@@ -142,14 +142,21 @@
 
       </div>
 
+      <!-- Success message -->
+      <transition name="fade">
+        <div v-if="formSent" class="colorOlive fontSize18 textCenter">
+          Thanks! We'll be in touch soon.
+        </div>
+      </transition>
+
       <!-- Form buttons -->
-      <div class="textRight fontSize20">
+      <div v-if="!formSent" class="textRight fontSize20">
 
         <!-- Reset button -->
         <button type="reset"
                 class="button circular width140 height50 marginRight30 bgGray">
-          <span class="verticalMiddle lineHeight32">Reset</span>
-          <span v-html="reset"></span>
+          <span class="verticalMiddle">Reset</span>
+          <reset-icon></reset-icon>
         </button>
 
         <!-- Submit button -->
@@ -157,7 +164,7 @@
                 class="button circular width140 height50"
                 :class="{ 'disabled': contactForm.$isInvalid }">
           <span class="verticalMiddle">Send</span>
-          <span v-html="plane"></span>
+          <plane-icon></plane-icon>
         </button>
 
       </div>
@@ -168,16 +175,16 @@
 </template>
 
 <script>
-  import plane from '../assets/plane.svg'
-  import reset from '../assets/reset.svg'
   import VueForm from '../../dist/vueform'
+  import ResetIcon from './ResetIcon'
+  import PlaneIcon from './PlaneIcon'
 
   export default {
     name: 'ContactForm',
+    components: { ResetIcon, PlaneIcon },
     data () {
       return {
-        plane,
-        reset,
+        formSent: false,
         contactData: {},
         contactForm: new VueForm()
       }
@@ -186,6 +193,7 @@
       send () {
         if (this.contactForm.$isValid) {
           console.log('VALID')
+          this.formSent = true
         } else {
           console.log('INVALID')
         }

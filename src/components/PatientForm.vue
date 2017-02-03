@@ -230,14 +230,21 @@
 
       </div>
 
+      <!-- Success message -->
+      <transition name="fade">
+        <div v-if="formSent" class="colorOlive fontSize18 textCenter">
+          Patient submitted.
+        </div>
+      </transition>
+
       <!-- Form buttons -->
-      <div class="textRight fontSize20">
+      <div v-if="!formSent" class="textRight fontSize20">
 
         <!-- Reset button -->
         <button type="reset"
                 class="button circular width140 height50 marginRight30 bgGray">
           <span class="verticalMiddle">Reset</span>
-          <span v-html="reset"></span>
+          <reset-icon></reset-icon>
         </button>
 
         <!-- Submit button -->
@@ -245,7 +252,7 @@
                 class="button circular width150 height50"
                 :class="{ 'disabled': patientForm.$isInvalid }">
           <span class="verticalMiddle">Submit</span>
-          <span v-html="check"></div>
+          <check-icon></check-icon>
         </button>
 
       </div>
@@ -257,11 +264,12 @@
 
 <script>
   import VueForm from '../../dist/vueform'
-  import reset from '../assets/reset.svg'
-  import check from '../assets/check.svg'
+  import ResetIcon from './ResetIcon'
+  import CheckIcon from './CheckIcon'
 
   export default {
     name: 'PatientForm',
+    components: { ResetIcon, CheckIcon },
     data () {
       const required = () => this.patientData.sex === 'female'
       const requiredFields = [
@@ -270,8 +278,7 @@
         { name: 'pregnant', required }
       ]
       return {
-        reset,
-        check,
+        formSent: false,
         patientData: { reasons: [], sex: null },
         patientForm: new VueForm({ required: requiredFields })
       }
@@ -285,6 +292,7 @@
     methods: {
       submit () {
         if (this.patientForm.$isValid) {
+          this.formSent = true
           console.log('VALID')
         } else {
           console.log('INVALID')
