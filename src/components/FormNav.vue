@@ -1,5 +1,5 @@
 <template>
-  <div class="nav displayFlex marginTop20 marginBottom25 fontSize14">
+  <div class="nav displayFlex marginTop30 marginBottom35 fontSize14">
     <router-link to="/contact" class="link marginRight20">
       Contact Form
     </router-link>

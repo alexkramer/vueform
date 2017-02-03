@@ -265,7 +265,7 @@ var VueForm = function () {
         if (this.$isFieldRequired(name)) {
 
           // Set the validity state of the named group.
-          var valid = new FormData(this.$el).has(name);
+          var valid = this.$getNamedValue(name);
           var validity = { valid: valid, valueMissing: !valid };
           if (this[name]) {
             Object.assign(this[name], validity);
@@ -277,6 +277,52 @@ var VueForm = function () {
           this.$updateFormValidity(name);
         }
       }
+    }
+  }, {
+    key: '$getNamedValue',
+    value: function $getNamedValue(name) {
+      var elements = this.$el.querySelectorAll('[name=' + name + ']');
+      var value = void 0;
+      if (elements.length > 1) {
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = elements[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var el = _step.value;
+
+            if (el.checked) {
+              if (el.type === 'radio') {
+                value = el.value;
+                break;
+              } else if (el.type === 'checkbox') {
+                if (value) {
+                  value.push(el.value);
+                } else {
+                  value = [el.value];
+                }
+              }
+            }
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+      } else if (elements.length === 1) {
+        value = elements[0].value;
+      }
+      return value;
     }
   }], [{
     key: 'install',
@@ -316,13 +362,13 @@ var VueForm = function () {
 
               // Reset $wasFocused property and remove the corresponding class
               // from each child node.
-              var _iteratorNormalCompletion = true;
-              var _didIteratorError = false;
-              var _iteratorError = undefined;
+              var _iteratorNormalCompletion2 = true;
+              var _didIteratorError2 = false;
+              var _iteratorError2 = undefined;
 
               try {
-                for (var _iterator = Object.keys(value)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                  var id = _step.value;
+                for (var _iterator2 = Object.keys(value)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                  var id = _step2.value;
 
                   if (id.indexOf('$') === -1 && value[id].$el) {
                     value[id].$wasFocused = false;
@@ -332,16 +378,16 @@ var VueForm = function () {
                   }
                 }
               } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
               } finally {
                 try {
-                  if (!_iteratorNormalCompletion && _iterator.return) {
-                    _iterator.return();
+                  if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                    _iterator2.return();
                   }
                 } finally {
-                  if (_didIteratorError) {
-                    throw _iteratorError;
+                  if (_didIteratorError2) {
+                    throw _iteratorError2;
                   }
                 }
               }
@@ -351,13 +397,13 @@ var VueForm = function () {
           // Go through each field within the form, set up its state within
           // the form object, and listen to input or change events to keep its
           // state in sync.
-          var _iteratorNormalCompletion2 = true;
-          var _didIteratorError2 = false;
-          var _iteratorError2 = undefined;
+          var _iteratorNormalCompletion3 = true;
+          var _didIteratorError3 = false;
+          var _iteratorError3 = undefined;
 
           try {
-            for (var _iterator2 = el.querySelectorAll('input, textarea, select')[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-              var $el = _step2.value;
+            for (var _iterator3 = el.querySelectorAll('input, textarea, select')[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+              var $el = _step3.value;
 
 
               // Only work with elements that belong to the form, have the ability
@@ -405,16 +451,16 @@ var VueForm = function () {
               }
             }
           } catch (err) {
-            _didIteratorError2 = true;
-            _iteratorError2 = err;
+            _didIteratorError3 = true;
+            _iteratorError3 = err;
           } finally {
             try {
-              if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                _iterator2.return();
+              if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                _iterator3.return();
               }
             } finally {
-              if (_didIteratorError2) {
-                throw _iteratorError2;
+              if (_didIteratorError3) {
+                throw _iteratorError3;
               }
             }
           }

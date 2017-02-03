@@ -44,6 +44,7 @@ function extractValidity(el) {
 }
 
 export default class VueForm {
+
   constructor (options) {
     const defaults = {
       wasFocusedClass: 'wasFocused',
@@ -253,7 +254,7 @@ export default class VueForm {
       if (this.$isFieldRequired(name)) {
 
         // Set the validity state of the named group.
-        const valid = new FormData(this.$el).has(name)
+        const valid = this.$getNamedValue(name)
         const validity = { valid, valueMissing: !valid  }
         if (this[name]) {
           Object.assign(this[name], validity)
@@ -268,4 +269,29 @@ export default class VueForm {
     }
 
   }
+
+  $getNamedValue (name) {
+    const elements = this.$el.querySelectorAll(`[name=${name}]`)
+    let value
+    if (elements.length > 1) {
+      for (const el of elements) {
+        if (el.checked) {
+          if (el.type === 'radio') {
+            value = el.value
+            break;
+          } else if (el.type === 'checkbox') {
+            if (value) {
+              value.push(el.value)
+            } else {
+              value = [el.value]
+            }
+          }
+        }
+      }
+    } else if (elements.length === 1) {
+      value = elements[0].value
+    }
+    return value
+  }
+
 }
