@@ -20,9 +20,8 @@
         </div>
 
         <div class="displayTableCell width100 verticalMiddle textCenter">
-          <a class="link"
-             href="https://github.com/optick/vueform">
-            <div class="width80 height80 fillElixir" v-html="githubSvg"></div>
+          <a class="link" href="https://github.com/optick/vueform">
+            <git-hub-icon></git-hub-icon>
           </a>
         </div>
 
@@ -31,12 +30,10 @@
 </template>
 
 <script>
-  import githubSvg from '../assets/github.svg'
+  import GitHubIcon from './GitHubIcon'
 
   export default {
     name: 'SiteHeader',
-    data () {
-      return { githubSvg }
-    }
+    components: { GitHubIcon }
   }
 </script>

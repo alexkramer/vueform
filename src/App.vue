@@ -9,26 +9,12 @@
 </template>
 
 <script>
-  import Vue from 'vue'
-  import VueRouter from 'vue-router'
-
   import SiteHeader from './components/SiteHeader'
   import FormNav from './components/FormNav'
   import SiteFooter from './components/SiteFooter'
-  import ContactForm from './components/ContactForm'
-  import PatientForm from './components/PatientForm'
-
-  Vue.use(VueRouter)
-
-  const routes = [
-    { name: 'ContactForm', path: '/contact', component: ContactForm },
-    { name: 'PatientForm', path: '/patient', component: PatientForm },
-    { path: '*', redirect: { name: 'ContactForm' } }
-  ]
 
   export default {
     name: 'App',
-    router: new VueRouter({ mode: 'history', routes }),
     components: { SiteHeader, SiteFooter, FormNav }
   }
 </script>

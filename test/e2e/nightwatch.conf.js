@@ -14,7 +14,7 @@ module.exports = {
 
   selenium: {
     start_process: typeof process.env.SELENIUM_HUB_HOST === 'undefined',
-    server_path: 'node_modules/selenium-server/lib/runner/selenium-server-standalone-2.53.1.jar',
+    server_path: require('selenium-server').path,
     host: '127.0.0.1',
     port: 4444,
     cli_args: {
