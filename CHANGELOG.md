@@ -1,4 +1,12 @@
-# Changes to vueform
+# Changes to VueForm
+
+## 1.5.0
+
+* Fixed [#19: Fix SVG layout for IE on demo site](https://github.com/optick/vueform/issues/19)
+* Fixed [#18: Wait for fonts to load before rendering demo page](https://github.com/optick/vueform/issues/18)
+* Fixed [#17: Fix Internet Explorer error](https://github.com/optick/vueform/issues/17)
+* Added [#16: Check if the directive value is a VueForm instance before populating it](https://github.com/optick/vueform/issues/16)
+* Added [#11: Show a success message after a valid form is submitted](https://github.com/optick/vueform/issues/11)
 
 ## 1.4.0
 
