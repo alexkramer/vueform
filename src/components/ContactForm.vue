@@ -142,26 +142,25 @@
 
       </div>
 
-      <!-- Submit button -->
-      <button type="submit"
-              class="button circular floatRight width140 height50 fontSize20
-                     lineHeight32"
-              :class="{ 'disabled': contactForm.$isInvalid }">
-        <div class="width30 fillWhite floatRight marginRight10 marginTop2"
-             v-html="plane">
-        </div>
-        Send
-      </button>
+      <!-- Form buttons -->
+      <div class="textRight fontSize20">
 
-      <!-- Reset button -->
-      <button type="reset"
-              class="button circular floatRight width140 height50 fontSize20
-                     lineHeight32 marginRight30 bgGray">
-        <div class="width22 fillWhite floatRight marginRight10 marginTop2"
-             v-html="reset">
-        </div>
-        Reset
-      </button>
+        <!-- Reset button -->
+        <button type="reset"
+                class="button circular width140 height50 marginRight30 bgGray">
+          <span class="verticalMiddle lineHeight32">Reset</span>
+          <span v-html="reset"></span>
+        </button>
+
+        <!-- Submit button -->
+        <button type="submit"
+                class="button circular width140 height50"
+                :class="{ 'disabled': contactForm.$isInvalid }">
+          <span class="verticalMiddle">Send</span>
+          <span v-html="plane"></span>
+        </button>
+
+      </div>
 
     </div>
 

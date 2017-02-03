@@ -1,6 +1,6 @@
 <template>
   <header>
-    <section class="paddingTop30">
+    <section class="paddingTop40">
 
       <div class="displayTable marginLeftAuto marginRightAuto">
 
