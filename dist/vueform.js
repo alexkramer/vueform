@@ -308,7 +308,7 @@ var VueForm = function () {
             value = el.value;
           } else if (value) {
             value.push(el.value);
-          } else {
+          } else if (el.value) {
             value = [el.value];
           }
         }

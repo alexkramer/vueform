@@ -1,5 +1,9 @@
 # Changes to VueForm
 
+## 1.6.2
+
+* Fixed [#22: Empty grouped value issue](https://github.com/optick/vueform/issues/22)
+
 ## 1.6.1
 
 * Fixed [#21: isUnregistered issue](https://github.com/optick/vueform/issues/21)
