@@ -412,7 +412,7 @@ var VueForm = function () {
               if ($el.form === el && $el.willValidate) {
                 (function () {
                   var id = $el.getAttribute('id');
-                  var isUnregistered = id && !value[id];
+                  var isUnregistered = id && (!value[id] || !value[id].$el);
 
                   //
                   if (isUnregistered) {

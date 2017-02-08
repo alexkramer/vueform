@@ -115,7 +115,7 @@ export default class VueForm {
           // to be validated, and have and id or name property.
           if ($el.form === el && $el.willValidate) {
             const id = $el.getAttribute('id')
-            const isUnregistered = id && !value[id]
+            const isUnregistered = id && (!value[id] || !value[id].$el)
 
             //
             if (isUnregistered) {

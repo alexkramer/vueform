@@ -1,5 +1,9 @@
 # Changes to VueForm
 
+## 1.6.1
+
+* Fixed [#21: isUnregistered issue](https://github.com/optick/vueform/issues/21)
+
 ## 1.6.0
 
 * Added [#20: Allow non-checkable fields to have their validity grouped by name](https://github.com/optick/vueform/issues/20)
