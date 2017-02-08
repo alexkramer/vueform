@@ -112,7 +112,9 @@ function extractValidity(el) {
     tooShort = el.value.length < minlength;
     if (tooShort) {
       valid = false;
-      el.setCustomValidity(('\n        Please lengthen this text to ' + minlength + ' characters or more (you are\n        currently using ' + el.value.length + ' characters).\n      ').trim());
+      var one = 'Please lengthen this text to ' + minlength + ' characters or more';
+      var two = ' (you are currently using ' + el.value.length + ' characters).';
+      el.setCustomValidity(one + two);
     } else {
       el.setCustomValidity('');
     }
@@ -177,15 +179,20 @@ var VueForm = function () {
         if (invalid && (isBoolean || isNonEmptyString)) {
           if (isNonEmptyString) {
             this[field].customMessage = invalid;
-            this[field].$el.setCustomValidity(invalid);
           } else {
-            this[field].$el.setCustomValidity('Error');
+            invalid = 'Error';
           }
         } else {
           delete this[field].customMessage;
-          this[field].$el.setCustomValidity('');
+          invalid = '';
         }
-        Object.assign(this[field], extractValidity(this[field].$el));
+        if (this[field].$el) {
+          this[field].$el.setCustomValidity(invalid);
+          Object.assign(this[field], extractValidity(this[field].$el));
+        } else {
+          this[field].customError = invalid !== '';
+          this[field].valid = this[field].valid && invalid === '';
+        }
         this.$updateFormValidity(field);
       }
     }
@@ -261,7 +268,7 @@ var VueForm = function () {
         if (this.$isFieldRequired(name)) {
 
           // Set the validity state of the named group.
-          var valid = this.$getNamedValue(name);
+          var valid = !!this.$getNamedValue(name);
           var validity = { valid: valid, valueMissing: !valid };
           if (this[name]) {
             Object.assign(this[name], validity);

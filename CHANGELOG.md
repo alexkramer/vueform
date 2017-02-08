@@ -1,5 +1,9 @@
 # Changes to VueForm
 
+## 1.6.3
+
+* Fixed [#23: $setCustomValidity doesn't work on named groups](https://github.com/optick/vueform/issues/23)
+
 ## 1.6.2
 
 * Fixed [#22: Empty grouped value issue](https://github.com/optick/vueform/issues/22)
