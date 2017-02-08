@@ -1,7 +1,7 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('babel-polyfill')) :
   typeof define === 'function' && define.amd ? define(['babel-polyfill'], factory) :
-  (global.VueValid = factory(global.babelPolyfill));
+  (global.VueForm = factory(global.babelPolyfill));
 }(this, (function (babelPolyfill) { 'use strict';
 
 var classCallCheck = function (instance, Constructor) {
@@ -283,15 +283,15 @@ var VueForm = function () {
     value: function $getNamedValue(name) {
       var elements = this.$el.querySelectorAll('[name=' + name + ']');
       var value = void 0;
-      if (elements.length > 1) {
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
 
-        try {
-          for (var _iterator = elements[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var el = _step.value;
+      try {
+        for (var _iterator = elements[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var el = _step.value;
 
+          if (['radio', 'checkbox'].indexOf(el.type) !== -1) {
             if (el.checked) {
               if (el.type === 'radio') {
                 value = el.value;
@@ -304,24 +304,29 @@ var VueForm = function () {
                 }
               }
             }
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
+          } else if (elements.length === 1) {
+            value = el.value;
+          } else if (value) {
+            value.push(el.value);
+          } else {
+            value = [el.value];
           }
         }
-      } else if (elements.length === 1) {
-        value = elements[0].value;
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
       }
+
       return value;
     }
   }], [{

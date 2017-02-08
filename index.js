@@ -273,8 +273,8 @@ export default class VueForm {
   $getNamedValue (name) {
     const elements = this.$el.querySelectorAll(`[name=${name}]`)
     let value
-    if (elements.length > 1) {
-      for (const el of elements) {
+    for (const el of elements) {
+      if (['radio', 'checkbox'].indexOf(el.type) !== -1) {
         if (el.checked) {
           if (el.type === 'radio') {
             value = el.value
@@ -287,10 +287,15 @@ export default class VueForm {
             }
           }
         }
+      } else if (elements.length === 1) {
+        value = el.value
+      } else if (value) {
+        value.push(el.value)
+      } else {
+        value = [el.value]
       }
-    } else if (elements.length === 1) {
-      value = elements[0].value
     }
+
     return value
   }
 

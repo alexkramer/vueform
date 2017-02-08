@@ -1,5 +1,9 @@
 # Changes to VueForm
 
+## 1.6.0
+
+* Added [#20: Allow non-checkable fields to have their validity grouped by name](https://github.com/optick/vueform/issues/20)
+
 ## 1.5.0
 
 * Fixed [#19: Fix SVG layout for IE on demo site](https://github.com/optick/vueform/issues/19)
