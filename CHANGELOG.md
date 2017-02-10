@@ -1,5 +1,9 @@
 # Changes to VueForm
 
+## 1.6.5
+
+* Fixed [#25: Elements aren't unregistered after being removed from the form](https://github.com/optick/vueform/issues/25)
+
 ## 1.6.4
 
 * Fixed [#24: Register elements on componentUpdated hook instead of update](https://github.com/optick/vueform/issues/24)

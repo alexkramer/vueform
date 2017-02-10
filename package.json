@@ -1,6 +1,6 @@
 {
   "name": "vueform",
-  "version": "1.6.4",
+  "version": "1.6.5",
   "description": "Form validation for Vue.js powered by HTML5",
   "keywords": [
     "vue",

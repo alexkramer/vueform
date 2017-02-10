@@ -93,6 +93,9 @@ var set = function set(object, property, value, receiver) {
   return value;
 };
 
+var _window = window;
+var MutationObserver = _window.MutationObserver;
+
 /**
  * extractValidity - Extracts the ValidityState information from a given
  * object into an object suitable for manipulation.
@@ -101,6 +104,7 @@ var set = function set(object, property, value, receiver) {
  * @return {object}         A non-read-only object mimicing the ValidityState
  *                          object for the given element.
  */
+
 function extractValidity(el) {
   var validity = el.validity;
 
@@ -211,7 +215,7 @@ var VueForm = function () {
     key: '$updateFormValidity',
     value: function $updateFormValidity(field) {
       var index = this.$invalidFields.indexOf(field);
-      if (this[field].valid && index !== -1) {
+      if ((!this[field] || this[field].valid) && index !== -1) {
         this.$invalidFields.splice(index, 1);
         if (this.$invalidFields.length === 0) {
           this.$isValid = true;
@@ -265,27 +269,28 @@ var VueForm = function () {
         var name = el.getAttribute('name');
 
         // Check if the named group was marked as required.
+        var valid = true;
         if (this.$isFieldRequired(name)) {
-
-          // Set the validity state of the named group.
-          var valid = !!this.$getNamedValue(name);
-          var validity = { valid: valid, valueMissing: !valid };
-          if (this[name]) {
-            Object.assign(this[name], validity);
-          } else {
-            Vue.set(this, name, validity);
-          }
-
-          // Update the forms overall validity.
-          this.$updateFormValidity(name);
+          valid = !!this.$getNamedValue(name);
         }
+
+        // Set the validity state of the named group.
+        var validity = { valid: valid, valueMissing: !valid };
+        if (this[name]) {
+          Object.assign(this[name], validity);
+        } else {
+          Vue.set(this, name, validity);
+        }
+
+        // Update the forms overall validity.
+        this.$updateFormValidity(name);
       }
     }
   }, {
     key: '$getNamedValue',
     value: function $getNamedValue(name) {
       var elements = this.$el.querySelectorAll('[name=' + name + ']');
-      var value = void 0;
+      var value = true;
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
@@ -300,16 +305,18 @@ var VueForm = function () {
                 value = el.value;
                 break;
               } else if (el.type === 'checkbox') {
-                if (value) {
+                if (Array.isArray(value)) {
                   value.push(el.value);
                 } else {
                   value = [el.value];
                 }
               }
+            } else if (value === true) {
+              value = false;
             }
           } else if (elements.length === 1) {
             value = el.value;
-          } else if (value) {
+          } else if (Array.isArray(value)) {
             value.push(el.value);
           } else if (el.value) {
             value = [el.value];
@@ -336,8 +343,10 @@ var VueForm = function () {
     key: 'install',
     value: function install(Vue) {
 
+      var tags = 'input, textarea, select';
+
       //
-      var register = function register(el, _ref) {
+      var componentUpdated = function componentUpdated(el, _ref) {
         var value = _ref.value;
 
 
@@ -410,7 +419,7 @@ var VueForm = function () {
           var _iteratorError3 = undefined;
 
           try {
-            for (var _iterator3 = el.querySelectorAll('input, textarea, select')[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+            for (var _iterator3 = el.querySelectorAll(tags)[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
               var $el = _step3.value;
 
 
@@ -475,8 +484,94 @@ var VueForm = function () {
         }
       };
 
+      var inserted = function inserted(el, context) {
+
+        componentUpdated(el, context);
+
+        //
+        var observer = new MutationObserver(function (mutations) {
+          var _iteratorNormalCompletion4 = true;
+          var _didIteratorError4 = false;
+          var _iteratorError4 = undefined;
+
+          try {
+            for (var _iterator4 = mutations[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+              var mutation = _step4.value;
+
+              var rootNode = mutation.removedNodes[0] || mutation.target;
+              if (rootNode && rootNode.hasAttribute) {
+                var nodes = rootNode.querySelectorAll(tags);
+
+                //
+                if (tags.indexOf(rootNode.tagName) !== -1) {
+                  nodes.push(rootNode);
+                }
+
+                //
+                var _iteratorNormalCompletion5 = true;
+                var _didIteratorError5 = false;
+                var _iteratorError5 = undefined;
+
+                try {
+                  for (var _iterator5 = nodes[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                    var node = _step5.value;
+
+                    var id = node.getAttribute('id');
+                    var name = node.getAttribute('name');
+
+                    //
+                    if (id && context.value[id]) {
+                      if (mutation.type === 'attributes') {
+                        //
+                        Object.assign(context.value[id], extractValidity(node));
+                      } else if (mutation.removedNodes.length) {
+                        //
+                        delete context.value[id];
+                      }
+                      context.value.$updateFormValidity(id);
+                    }
+
+                    //
+                    if (name && context.value[name]) {
+                      context.value.$updateNamedValidity(node, Vue);
+                    }
+                  }
+                } catch (err) {
+                  _didIteratorError5 = true;
+                  _iteratorError5 = err;
+                } finally {
+                  try {
+                    if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                      _iterator5.return();
+                    }
+                  } finally {
+                    if (_didIteratorError5) {
+                      throw _iteratorError5;
+                    }
+                  }
+                }
+              }
+            }
+          } catch (err) {
+            _didIteratorError4 = true;
+            _iteratorError4 = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                _iterator4.return();
+              }
+            } finally {
+              if (_didIteratorError4) {
+                throw _iteratorError4;
+              }
+            }
+          }
+        });
+        observer.observe(el, { attributes: true, subtree: true, childList: true });
+      };
+
       // v-form directive.
-      Vue.directive('form', { inserted: register, componentUpdated: register });
+      Vue.directive('form', { inserted: inserted, componentUpdated: componentUpdated });
     }
   }]);
   return VueForm;

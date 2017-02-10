@@ -1,4 +1,6 @@
-import 'babel-polyfill';
+import 'babel-polyfill'
+
+const { MutationObserver } = window
 
 /**
  * extractValidity - Extracts the ValidityState information from a given
@@ -64,8 +66,10 @@ export default class VueForm {
 
   static install (Vue) {
 
+    const tags = 'input, textarea, select'
+
     //
-    const register = (el, { value }) => {
+    const componentUpdated = (el, { value }) => {
 
       if (value instanceof VueForm) {
 
@@ -108,7 +112,7 @@ export default class VueForm {
         // Go through each field within the form, set up its state within
         // the form object, and listen to input or change events to keep its
         // state in sync.
-        for (const $el of el.querySelectorAll('input, textarea, select')) {
+        for (const $el of el.querySelectorAll(tags)) {
 
           // Only work with elements that belong to the form, have the ability
           // to be validated, and have and id or name property.
@@ -155,8 +159,53 @@ export default class VueForm {
 
     }
 
+    const inserted = (el, context) => {
+
+      componentUpdated(el, context)
+
+      //
+      const observer = new MutationObserver(mutations => {
+        for (const mutation of mutations) {
+          const rootNode = mutation.removedNodes[0] || mutation.target
+          if (rootNode && rootNode.hasAttribute) {
+            const nodes = rootNode.querySelectorAll(tags)
+
+            //
+            if (tags.indexOf(rootNode.tagName) !== -1) {
+              nodes.push(rootNode)
+            }
+
+            //
+            for (const node of nodes) {
+              const id = node.getAttribute('id')
+              const name = node.getAttribute('name')
+
+              //
+              if (id && context.value[id]) {
+                if (mutation.type === 'attributes') {
+                  //
+                  Object.assign(context.value[id], extractValidity(node))
+                } else if (mutation.removedNodes.length) {
+                  //
+                  delete context.value[id]
+                }
+                context.value.$updateFormValidity(id)
+              }
+
+              //
+              if (name && context.value[name]) {
+                context.value.$updateNamedValidity(node, Vue)
+              }
+            }
+          }
+        }
+      })
+      observer.observe(el, { attributes: true, subtree: true, childList: true })
+
+    }
+
     // v-form directive.
-    Vue.directive('form', { inserted: register, componentUpdated: register })
+    Vue.directive('form', { inserted, componentUpdated })
 
   }
 
@@ -208,7 +257,7 @@ export default class VueForm {
    */
   $updateFormValidity (field) {
     const index = this.$invalidFields.indexOf(field)
-    if (this[field].valid && index !== -1) {
+    if ((!this[field] || this[field].valid) && index !== -1) {
       this.$invalidFields.splice(index, 1)
       if (this.$invalidFields.length === 0) {
         this.$isValid = true
@@ -258,28 +307,28 @@ export default class VueForm {
       const name = el.getAttribute('name')
 
       // Check if the named group was marked as required.
+      let valid = true
       if (this.$isFieldRequired(name)) {
-
-        // Set the validity state of the named group.
-        const valid = !!this.$getNamedValue(name)
-        const validity = { valid, valueMissing: !valid  }
-        if (this[name]) {
-          Object.assign(this[name], validity)
-        } else {
-          Vue.set(this, name, validity)
-        }
-
-        // Update the forms overall validity.
-        this.$updateFormValidity(name)
-
+        valid = !!this.$getNamedValue(name)
       }
+
+      // Set the validity state of the named group.
+      const validity = { valid, valueMissing: !valid  }
+      if (this[name]) {
+        Object.assign(this[name], validity)
+      } else {
+        Vue.set(this, name, validity)
+      }
+
+      // Update the forms overall validity.
+      this.$updateFormValidity(name)
     }
 
   }
 
   $getNamedValue (name) {
     const elements = this.$el.querySelectorAll(`[name=${name}]`)
-    let value
+    let value = true
     for (const el of elements) {
       if (['radio', 'checkbox'].indexOf(el.type) !== -1) {
         if (el.checked) {
@@ -287,22 +336,23 @@ export default class VueForm {
             value = el.value
             break;
           } else if (el.type === 'checkbox') {
-            if (value) {
+            if (Array.isArray(value)) {
               value.push(el.value)
             } else {
               value = [el.value]
             }
           }
+        } else if (value === true) {
+          value = false
         }
       } else if (elements.length === 1) {
         value = el.value
-      } else if (value) {
+      } else if (Array.isArray(value)) {
         value.push(el.value)
       } else if (el.value) {
         value = [el.value]
       }
     }
-
     return value
   }
 
