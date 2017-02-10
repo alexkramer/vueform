@@ -6,7 +6,7 @@ import PatientForm from '../components/PatientForm'
 
 Vue.use(Router)
 
-export default new Router({
+export default new Router(mode: 'history', {
   routes: [
     { name: 'ContactForm', path: '/contact', component: ContactForm },
     { name: 'PatientForm', path: '/patient', component: PatientForm },
