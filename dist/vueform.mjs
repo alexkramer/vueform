@@ -206,25 +206,27 @@ var VueForm = function () {
      * existing validity state of its fields and the updated validity state of
      * the given field.
      *
-     * @param {string} field The identifier for the field whose validity state
-     *                       has updated and has consequently triggered the update
-     *                       of the overall forms validity.
+     * @param {string} id The identifier for the field whose validity state has
+     *                    updated and has consequently triggered the update of the
+     *                    overall forms validity.
      */
 
   }, {
     key: '$updateFormValidity',
-    value: function $updateFormValidity(field) {
-      var index = this.$invalidFields.indexOf(field);
-      if ((!this[field] || this[field].valid) && index !== -1) {
+    value: function $updateFormValidity(id) {
+      var index = this.$invalidFields.indexOf(id);
+      var field = this[id];
+      var valid = field.valid || field.valid === undefined;
+      if (valid && index !== -1) {
         this.$invalidFields.splice(index, 1);
         if (this.$invalidFields.length === 0) {
           this.$isValid = true;
           this.$isInvalid = false;
         }
-      } else if (!this[field].valid && index === -1) {
+      } else if (!valid && index === -1) {
         this.$isValid = false;
         this.$isInvalid = true;
-        this.$invalidFields.push(field);
+        this.$invalidFields.push(id);
       }
     }
 
@@ -286,6 +288,14 @@ var VueForm = function () {
         this.$updateFormValidity(name);
       }
     }
+
+    /**
+     * getNamedValue -
+     *
+     * @param  {type} name description
+     * @return {type}      description
+     */
+
   }, {
     key: '$getNamedValue',
     value: function $getNamedValue(name) {
@@ -343,9 +353,10 @@ var VueForm = function () {
     key: 'install',
     value: function install(Vue) {
 
-      var tags = 'input, textarea, select';
+      // Query string for elements that can be validated.
+      var fieldTags = 'input, textarea, select';
 
-      //
+      // TODO comment
       var componentUpdated = function componentUpdated(el, _ref) {
         var value = _ref.value;
 
@@ -419,7 +430,7 @@ var VueForm = function () {
           var _iteratorError3 = undefined;
 
           try {
-            for (var _iterator3 = el.querySelectorAll(tags)[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+            for (var _iterator3 = el.querySelectorAll(fieldTags)[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
               var $el = _step3.value;
 
 
@@ -430,7 +441,7 @@ var VueForm = function () {
                   var id = $el.getAttribute('id');
                   var isUnregistered = id && (!value[id] || !value[id].$el);
 
-                  //
+                  // TODO comment
                   if (isUnregistered) {
 
                     // Create the field object and extract its validity state.
@@ -447,7 +458,7 @@ var VueForm = function () {
                     });
                   }
 
-                  //
+                  // TODO comment
                   value.$updateNamedValidity($el, Vue);
 
                   // On change or input events, update the field and form validity
@@ -484,11 +495,12 @@ var VueForm = function () {
         }
       };
 
+      // TODO comment
       var inserted = function inserted(el, context) {
 
         componentUpdated(el, context);
 
-        //
+        // TODO comment
         var observer = new MutationObserver(function (mutations) {
           var _iteratorNormalCompletion4 = true;
           var _didIteratorError4 = false;
@@ -500,14 +512,14 @@ var VueForm = function () {
 
               var rootNode = mutation.removedNodes[0] || mutation.target;
               if (rootNode && rootNode.hasAttribute) {
-                var nodes = rootNode.querySelectorAll(tags);
+                var nodes = rootNode.querySelectorAll(fieldTags);
 
-                //
-                if (tags.indexOf(rootNode.tagName) !== -1) {
+                // TODO comment
+                if (fieldTags.indexOf(rootNode.tagName) !== -1) {
                   nodes.push(rootNode);
                 }
 
-                //
+                // TODO comment
                 var _iteratorNormalCompletion5 = true;
                 var _didIteratorError5 = false;
                 var _iteratorError5 = undefined;
@@ -519,19 +531,21 @@ var VueForm = function () {
                     var id = node.getAttribute('id');
                     var name = node.getAttribute('name');
 
-                    //
+                    // TODO comment
                     if (id && context.value[id]) {
                       if (mutation.type === 'attributes') {
-                        //
+                        // Update the fields validity state because it may have
+                        // changed due to an updated attribute on it's element.
                         Object.assign(context.value[id], extractValidity(node));
                       } else if (mutation.removedNodes.length) {
-                        //
-                        delete context.value[id];
+                        // If the field has been removed, set it to an empty object
+                        // so that VueForm will not consider it invalid.
+                        context.value[id] = {};
                       }
                       context.value.$updateFormValidity(id);
                     }
 
-                    //
+                    // TODO comment
                     if (name && context.value[name]) {
                       context.value.$updateNamedValidity(node, Vue);
                     }
@@ -570,7 +584,7 @@ var VueForm = function () {
         observer.observe(el, { attributes: true, subtree: true, childList: true });
       };
 
-      // v-form directive.
+      // Register the v-form directive.
       Vue.directive('form', { inserted: inserted, componentUpdated: componentUpdated });
     }
   }]);

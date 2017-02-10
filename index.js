@@ -66,9 +66,10 @@ export default class VueForm {
 
   static install (Vue) {
 
-    const tags = 'input, textarea, select'
+    // Query string for elements that can be validated.
+    const fieldTags = 'input, textarea, select'
 
-    //
+    // TODO comment
     const componentUpdated = (el, { value }) => {
 
       if (value instanceof VueForm) {
@@ -112,7 +113,7 @@ export default class VueForm {
         // Go through each field within the form, set up its state within
         // the form object, and listen to input or change events to keep its
         // state in sync.
-        for (const $el of el.querySelectorAll(tags)) {
+        for (const $el of el.querySelectorAll(fieldTags)) {
 
           // Only work with elements that belong to the form, have the ability
           // to be validated, and have and id or name property.
@@ -120,7 +121,7 @@ export default class VueForm {
             const id = $el.getAttribute('id')
             const isUnregistered = id && (!value[id] || !value[id].$el)
 
-            //
+            // TODO comment
             if (isUnregistered) {
 
               // Create the field object and extract its validity state.
@@ -136,7 +137,7 @@ export default class VueForm {
 
             }
 
-            //
+            // TODO comment
             value.$updateNamedValidity($el, Vue)
 
             // On change or input events, update the field and form validity
@@ -159,40 +160,43 @@ export default class VueForm {
 
     }
 
+    // TODO comment
     const inserted = (el, context) => {
 
       componentUpdated(el, context)
 
-      //
+      // TODO comment
       const observer = new MutationObserver(mutations => {
         for (const mutation of mutations) {
           const rootNode = mutation.removedNodes[0] || mutation.target
           if (rootNode && rootNode.hasAttribute) {
-            const nodes = rootNode.querySelectorAll(tags)
+            const nodes = rootNode.querySelectorAll(fieldTags)
 
-            //
-            if (tags.indexOf(rootNode.tagName) !== -1) {
+            // TODO comment
+            if (fieldTags.indexOf(rootNode.tagName) !== -1) {
               nodes.push(rootNode)
             }
 
-            //
+            // TODO comment
             for (const node of nodes) {
               const id = node.getAttribute('id')
               const name = node.getAttribute('name')
 
-              //
+              // TODO comment
               if (id && context.value[id]) {
                 if (mutation.type === 'attributes') {
-                  //
+                  // Update the fields validity state because it may have
+                  // changed due to an updated attribute on it's element.
                   Object.assign(context.value[id], extractValidity(node))
                 } else if (mutation.removedNodes.length) {
-                  //
-                  delete context.value[id]
+                  // If the field has been removed, set it to an empty object
+                  // so that VueForm will not consider it invalid.
+                  context.value[id] = {}
                 }
                 context.value.$updateFormValidity(id)
               }
 
-              //
+              // TODO comment
               if (name && context.value[name]) {
                 context.value.$updateNamedValidity(node, Vue)
               }
@@ -204,7 +208,7 @@ export default class VueForm {
 
     }
 
-    // v-form directive.
+    // Register the v-form directive.
     Vue.directive('form', { inserted, componentUpdated })
 
   }
@@ -251,22 +255,24 @@ export default class VueForm {
    * existing validity state of its fields and the updated validity state of
    * the given field.
    *
-   * @param {string} field The identifier for the field whose validity state
-   *                       has updated and has consequently triggered the update
-   *                       of the overall forms validity.
+   * @param {string} id The identifier for the field whose validity state has
+   *                    updated and has consequently triggered the update of the
+   *                    overall forms validity.
    */
-  $updateFormValidity (field) {
-    const index = this.$invalidFields.indexOf(field)
-    if ((!this[field] || this[field].valid) && index !== -1) {
+  $updateFormValidity (id) {
+    const index = this.$invalidFields.indexOf(id)
+    const field = this[id]
+    const valid = field.valid || field.valid === undefined
+    if (valid && index !== -1) {
       this.$invalidFields.splice(index, 1)
       if (this.$invalidFields.length === 0) {
         this.$isValid = true
         this.$isInvalid = false
       }
-    } else if (!this[field].valid && index === -1) {
+    } else if (!valid && index === -1) {
       this.$isValid = false
       this.$isInvalid = true
-      this.$invalidFields.push(field)
+      this.$invalidFields.push(id)
     }
   }
 
@@ -326,6 +332,13 @@ export default class VueForm {
 
   }
 
+
+  /**
+   * getNamedValue -
+   *
+   * @param  {type} name description
+   * @return {type}      description
+   */
   $getNamedValue (name) {
     const elements = this.$el.querySelectorAll(`[name=${name}]`)
     let value = true

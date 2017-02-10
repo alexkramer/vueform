@@ -1,5 +1,9 @@
 # Changes to VueForm
 
+## 1.6.6
+
+* Fixed [#26: Set fields to empty objects instead of deleting them when removed from DOM](https://github.com/optick/vueform/issues/26)
+
 ## 1.6.5
 
 * Fixed [#25: Elements aren't unregistered after being removed from the form](https://github.com/optick/vueform/issues/25)
