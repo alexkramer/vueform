@@ -336,8 +336,8 @@ var VueForm = function () {
     key: 'install',
     value: function install(Vue) {
 
-      // v-form directive.
-      Vue.directive('form', function (el, _ref) {
+      //
+      var register = function register(el, _ref) {
         var value = _ref.value;
 
 
@@ -473,7 +473,10 @@ var VueForm = function () {
             }
           }
         }
-      });
+      };
+
+      // v-form directive.
+      Vue.directive('form', { inserted: register, componentUpdated: register });
     }
   }]);
   return VueForm;

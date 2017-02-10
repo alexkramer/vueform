@@ -1,5 +1,9 @@
 # Changes to VueForm
 
+## 1.6.4
+
+* Fixed [#24: Register elements on componentUpdated hook instead of update](https://github.com/optick/vueform/issues/24)
+
 ## 1.6.3
 
 * Fixed [#23: $setCustomValidity doesn't work on named groups](https://github.com/optick/vueform/issues/23)

@@ -64,8 +64,8 @@ export default class VueForm {
 
   static install (Vue) {
 
-    // v-form directive.
-    Vue.directive('form', (el, { value }) => {
+    //
+    const register = (el, { value }) => {
 
       if (value instanceof VueForm) {
 
@@ -153,7 +153,10 @@ export default class VueForm {
 
       }
 
-    })
+    }
+
+    // v-form directive.
+    Vue.directive('form', { inserted: register, componentUpdated: register })
 
   }
 
