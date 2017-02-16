@@ -1,7 +1,5 @@
 frontend:
   build: .
-  labels:
-    - convox.port.443.protocol=https
   environment:
     - SELENIUM_HUB_HOST=hub
     - SERVER_HOST=frontend
