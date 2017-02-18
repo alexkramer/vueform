@@ -11,4 +11,4 @@ RUN yarn
 
 EXPOSE 8080
 
-CMD [ "npm", "run", "test" ]
+CMD [ "npm", "run", "dev" ]
