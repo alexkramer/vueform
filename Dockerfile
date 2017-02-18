@@ -5,7 +5,7 @@ RUN mkdir /srv/vueform
 WORKDIR /srv/vueform
 
 # Install dependencies.
-RUN npm install yarn -g --no-progess
+RUN npm install yarn -g --no-progress
 COPY . /srv/vueform
 RUN yarn
 
