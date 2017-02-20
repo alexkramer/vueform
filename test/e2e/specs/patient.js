@@ -1,6 +1,5 @@
 module.exports = {
   'Patient Form Validation Failure Test': browser => {
-    console.log(browser.page.patient())
     browser.page.patient().navigate()
       .waitForElementVisible('@patientForm', 10000)
       .submitForm('@patientForm')

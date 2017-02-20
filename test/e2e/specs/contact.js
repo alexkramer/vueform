@@ -1,6 +1,5 @@
 module.exports = {
   'Contact Form Validation Failure Test': browser => {
-    console.log(browser.page.contact())
     browser.page.contact().navigate()
       .waitForElementVisible('@contactForm', 10000)
       .submitForm('@contactForm')
