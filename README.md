@@ -2,6 +2,8 @@
 
 > Form validation for [Vue.js](https://vuejs.org/) powered by HTML5
 
+[![Build Status](https://jenkins.optick.io/buildStatus/icon?job=VueForm)](https://jenkins.optick.io/job/VueForm)
+
 ## Features
 
 * Easy: integrates with Vue.js to provide a reactive interface for working with
