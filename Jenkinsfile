@@ -18,11 +18,9 @@ pipeline {
             sh 'docker run --rm optick/vueform npm run unit --silent'
           },
           "End-to-End": {
-            sh 'kubectl run vueform${BUILD_TAG} -i --rm --generator=run-pod/v1 \
+            sh 'kubectl run vueform${BUILD_TAG} -it --rm --generator=run-pod/v1 \
                 --env="SELENIUM_HUB_HOST=selenium-hub" \
                 --env="SERVER_HOST=vueform${BUILD_TAG}" \
-                --restart=Never \
-                --attach \
                 --image=optick/vueform \
                 --command -- npm run e2e --silent'
             sh 'echo $?'
