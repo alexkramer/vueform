@@ -6,8 +6,12 @@ WORKDIR /srv/vueform
 
 # Install dependencies.
 RUN npm install yarn -g --no-progress
-COPY . /srv/vueform
+COPY package.json /srv/vueform/package.json
+COPY yarn.lock /srv/vueform/yarn.lock
 RUN yarn
+
+# Copy remaining files over.
+COPY . /srv/vueform
 
 EXPOSE 8080
 
