@@ -22,7 +22,6 @@ pipeline {
                 --env="SELENIUM_HUB_HOST=selenium-hub" \
                 --env="SERVER_HOST=vueform${BUILD_TAG}" \
                 --alsologtostderr \
-                --request-timeout 2m \
                 --image=optick/vueform \
                 --command -- npm run e2e --silent'
             sh 'echo $?'
