@@ -1,8 +1,0 @@
-:8080
-gzip
-root site
-rewrite / {
-  regexp .*
-  ext /
-  to /index.html
-}
