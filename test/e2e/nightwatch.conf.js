@@ -1,8 +1,7 @@
 require('babel-register')
 var config = require('../../config')
 
-const { SERVER_HOST, HOSTNAME } = process.env
-const serverUrl = `http://${SERVER_HOST || HOSTNAME}:`
+const serverUrl = `http://${process.env.SERVER_HOST || 'localhost'}:`
 
 // http://nightwatchjs.org/guide#settings-file
 module.exports = {
