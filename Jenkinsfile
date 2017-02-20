@@ -46,13 +46,13 @@ pipeline {
         echo 'deploying'
       }
     }
-    post {
-      always {
-        sh 'docker network rm selenium'
-        sh "docker kill hub${env.BUILD_TAG} chrome${env.BUILD_TAG} firefox${env.BUILD_TAG}"
-        sh "docker rm hub${env.BUILD_TAG} chrome${env.BUILD_TAG} firefox${env.BUILD_TAG}"
-        sh "docker network rm ${env.BUILD_TAG}"
-      }
+  }
+  post {
+    always {
+      sh 'docker network rm selenium'
+      sh "docker kill hub${env.BUILD_TAG} chrome${env.BUILD_TAG} firefox${env.BUILD_TAG}"
+      sh "docker rm hub${env.BUILD_TAG} chrome${env.BUILD_TAG} firefox${env.BUILD_TAG}"
+      sh "docker network rm ${env.BUILD_TAG}"
     }
   }
 }
