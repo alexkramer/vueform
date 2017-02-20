@@ -18,12 +18,8 @@ pipeline {
             sh 'docker run --rm optick/vueform npm run unit --silent'
           },
           "End-to-End": {
-            sh 'kubectl run vueform${BUILD_TAG} -it --rm --generator=run-pod/v1 \
-                --env="SELENIUM_HUB_HOST=selenium-hub" \
-                --env="SERVER_HOST=vueform${BUILD_TAG}" \
-                --image=optick/vueform \
-                --command -- npm run e2e --silent'
-            sh 'echo $?'
+            sh 'kubectl create -f test/e2e/kube-config/vueform.yml'
+            sh 'kubectl attach -i vueform'
           }
         )
       }
@@ -32,6 +28,11 @@ pipeline {
       steps {
         echo 'deploying'
       }
+    }
+  }
+  post {
+    always {
+      junit 'e2e-reports/**/*.xml'
     }
   }
 }

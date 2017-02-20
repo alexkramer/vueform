@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: vueform
+spec:
+  containers:
+    - image: gcr.io/optick-147913/vueform
+      name: vueform
+      ports:
+        - containerPort: 8080
+      volumeMounts:
+        - mountPath: /srv/vueform/test/e2e/reports
+          name: e2e-reports-volume
+      env:
+        - name: SELENIUM_HUB_HOST
+          value: "selenium-hub"
+        - name: SERVER_HOST
+          value: "vueform"
+      command:
+        - "npm run e2e --silent"
+  restartPolicy: Never
+  volumes:
+    - name: e2e-reports-volume
+      hostPath:
+        path: e2e-reports
